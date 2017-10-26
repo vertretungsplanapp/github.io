@@ -1,0 +1,35 @@
+.vp-tab {
+	text-align: center;
+	vertical-align: center;
+	font-size: 0;
+	line-height: 0;
+}
+
+.vp-icon {
+	stroke: #414141;
+	stroke-opacity :1;
+	opacity: 1;
+	fill-rule: nonzero;
+	fill: none;
+	fill-opacity: 1;
+	stroke-width: 1.0;
+	stroke-miterlimit: 4;
+	stroke-dasharray: none;
+}
+
+.vp-icon-box {
+	width: auto;
+	height: auto;
+	max-height: 50px;
+}
+
+.vp-divider {
+	background-color: #414141;
+	height: 1px;
+}
+
+.vp-vpcard {
+	margin: 5px;
+}
+
+.vp-vpcard:
