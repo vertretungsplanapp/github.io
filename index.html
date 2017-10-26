@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--suppress CheckEmptyScriptTag -->
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,10 +10,10 @@
 </head>
 <body>
 <div class="w3-container w3-light-grey">
-    <h2>Vertretungsplan 3.0</h2>
+    <h2 class="vp-header">Vertretungsplan 3.0</h2>
 </div>
 <div class="w3-bar w3-light-grey">
-    <div id="nv-dashboard" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-dashboard w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -21,7 +21,7 @@
             </svg>
         </div>
     </div>
-    <div id="nv-vplan" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-vplan w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -29,7 +29,7 @@
             </svg>
         </div>
     </div>
-    <div id="nv-my-vplan" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-my-vplan w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -37,7 +37,7 @@
             </svg>
         </div>
     </div>
-    <div id="nv-daymsgs" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-daymsgs w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -45,7 +45,7 @@
             </svg>
         </div>
     </div>
-    <div id="nv-profiles" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-profiles w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -53,7 +53,7 @@
             </svg>
         </div>
     </div>
-    <div id="nv-settings" class="w3-bar-item w3-button w3-col s2 m2 l2">
+    <div class="nv-settings w3-bar-item w3-button w3-col s2 m2 l2">
         <div class="vp-tab">
             <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 0h24v24H0z" fill="none"/>
@@ -63,33 +63,51 @@
     </div>
 </div>
 <div class="vp-divider"></div>
-<div id="ly-main" class="w3-light-grey vp-main-container">
-    <div class="w3-col s4 m3 l2">
-        <div class="w3-container vp-vpcard w3-white">
-            <h3>10L</h3>
-            <p>Std: 1 - 2</p>
+<div class="ly-main vp-main-container">
+    <div class="ly-page-vplan">
+        <div class="ly-template-vcard w3-col s4 m3 l2" hidden>
+            <div class="w3-container vp-vpcard w3-white">
+                <h3 class="vp-class">Class</h3>
+                <p>Std: <span class="vp-hours">Hours</span></p>
+            </div>
+        </div>
+
+        <div class="vp-main-container">
+            <div class="vp-vcard-template w3-col s4 m3 l2">
+                <div class="w3-container vp-vpcard w3-white">
+                    <h3 class="vp-class">Class</h3>
+                    <p>Std: <span class="vp-hours">Hours</span></p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="w3-col s4 m3 l2">
-        <div class="w3-container vp-vpcard w3-white">
-            <h3>11. Jg.</h3>
-            <p>Std: 3</p>
-        </div>
-    </div>
-    <div class="w3-col s4 m3 l2">
-        <div class="w3-container vp-vpcard w3-white">
-            <h3>11. Jg.</h3>
-            <p>Std: 4</p>
-        </div>
-    </div>
-    <div class="w3-col s4 m3 l2">
-        <div class="w3-container vp-vpcard w3-white">
-            <h3>12. Jg.</h3>
-            <p>Std: 7 - 8</p>
-        </div>
-    </div>
+
+    <!--<div class="w3-col s4 m3 l2">-->
+        <!--<div class="w3-container vp-vpcard w3-white">-->
+            <!--<h3>10L</h3>-->
+            <!--<p>Std: 1 - 2</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="w3-col s4 m3 l2">-->
+        <!--<div class="w3-container vp-vpcard w3-white">-->
+            <!--<h3>11. Jg.</h3>-->
+            <!--<p>Std: 3</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="w3-col s4 m3 l2">-->
+        <!--<div class="w3-container vp-vpcard w3-white">-->
+            <!--<h3>11. Jg.</h3>-->
+            <!--<p>Std: 4</p>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<div class="w3-col s4 m3 l2">-->
+        <!--<div class="w3-container vp-vpcard w3-white">-->
+            <!--<h3>12. Jg.</h3>-->
+            <!--<p>Std: 7 - 8</p>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>
-<script type="text/javascript" src="out/production/VertretungsplanApp3/lib/kotlin.js">[i]</script>
-<script type="text/javascript" src="out/production/VertretungsplanApp3/VertretungsplanApp3.js"></script>
+<script type="text/javascript" src="out/production/VertretungsplanApp3/lib/kotlin.js" defer></script>
+<script type="text/javascript" src="out/production/VertretungsplanApp3/VertretungsplanApp3.js" defer></script>
 </body>
 </html>

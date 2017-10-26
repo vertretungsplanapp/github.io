@@ -3,9 +3,12 @@ if (typeof kotlin === 'undefined') {
 }
 var VertretungsplanApp3 = function (_, Kotlin) {
   'use strict';
-  var print = Kotlin.kotlin.io.print_s8jyv4$;
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   function main(args) {
-    print('test');
+    var tmp$, tmp$_0;
+    console.log('test');
+    var vcardsContent = ((tmp$_0 = (tmp$ = document.getElementsByClassName('ly-page-vplan')[0]) != null ? tmp$.getElementsByClassName('ly-template-vcard') : null) != null ? tmp$_0 : Kotlin.throwNPE())[0];
+    println(vcardsContent);
   }
   _.main_kand9s$ = main;
   main([]);
