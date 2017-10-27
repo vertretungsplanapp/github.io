@@ -11,7 +11,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     var vcardsContent = ((tmp$_0 = (tmp$ = document.getElementsByClassName('ly-page-vplan')[0]) != null ? tmp$.getElementsByClassName('ly-template-vcard') : null) != null ? tmp$_0 : Kotlin.throwNPE())[0];
     var mainContainer = ((tmp$_2 = (tmp$_1 = document.getElementsByClassName('ly-page-vplan')[0]) != null ? tmp$_1.getElementsByClassName('vp-main-container') : null) != null ? tmp$_2 : Kotlin.throwNPE())[0];
     if (Kotlin.isType(mainContainer, Element)) {
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < 40; i++) {
         println('round: ' + i);
         var newCard = vcardsContent != null ? vcardsContent.cloneNode(true) : null;
         if (Kotlin.isType(newCard, Element)) {
