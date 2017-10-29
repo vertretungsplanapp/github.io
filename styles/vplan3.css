@@ -32,13 +32,27 @@
 	height: 1px;
 }
 
-.vp-vpcard {
+.vp-vpbase {
 	margin: 2px;
+}
+
+.vp-section {
+	background-color: #D8E7ED;
+}
+
+.vp-vpcard {
 	#box-shadow: 0px 0px 2px #414141;
 	border: 1px solid #414141;
 }
 
 .ly-page-vplan .vp-main-container {
 	margin: 2px;
+}
+
+.ly-actionbar {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	overflow: scroll;
 }
 
