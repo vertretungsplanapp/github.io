@@ -26,8 +26,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     var actionBar = document.getElementsByClassName('ly-actionbar')[0];
     var contentContainer = document.getElementsByClassName('ly-main')[0];
     if (Kotlin.isType(actionBar, HTMLElement) && Kotlin.isType(contentContainer, HTMLElement)) {
-      contentContainer.style.marginTop = (actionBar.scrollHeight + 1 | 0).toString() + 'px';
-      println('test: ' + Kotlin.toString(actionBar.scrollHeight));
+      println('height: ' + Kotlin.toString(actionBar.scrollHeight));
     }
     var plan = (new Decoder(VERTRETUNGSPLAN_TEXT)).decode();
     var page = document.getElementsByClassName('ly-page-vplan')[0];

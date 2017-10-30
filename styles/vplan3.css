@@ -1,12 +1,24 @@
+@font-face {
+	font-family: 'Roboto';
+	src: url('fonts/Roboto-Regular.ttf');
+	format('truetype');
+}
+
+@font-face {
+	font-family: 'Roboto-Light';
+	src: url('fonts/Roboto-Light.ttf');
+	format('truetype');
+}
+
+html, body {
+	font-family: 'Roboto'
+}
+
 .vp-tab {
 	text-align: center;
 	vertical-align: center;
 	font-size: 0;
 	line-height: 0;
-}
-
-.vp-header {
-	color: #414141;
 }
 
 .vp-icon {
@@ -21,13 +33,23 @@
 	stroke-dasharray: none;
 }
 
+.vp-bar-item {
+	padding: 8px 0px!important
+}
+
 .vp-icon-box {
 	width: 33px;
 	height: 33px;
 }
 
-.vp-bar-item {
-	padding: 8px 0px!important
+.ly-main {
+	margin-top: 121px;
+}
+
+.vp-header {
+	color: #414141;
+	font-family: 'Roboto-Light';
+	font-size: 33px;
 }
 
 @media (min-width:601px) {
@@ -35,12 +57,28 @@
 		width: 40px;
 		height: 40px;
 	}
+
+	.ly-main {
+		margin-top: 139px;
+	}
+
+	.vp-header {
+		font-size: 40px;
+	}
 }
 
 @media (min-width:993px) {
 	.vp-icon-box {
 		width: 48px;
 		height: 48px;
+	}
+
+	.ly-main {
+		margin-top: 159px;
+	}
+
+	.vp-header {
+		font-size: 48px;
 	}
 }
 
@@ -59,7 +97,7 @@
 
 .vp-vpcard {
 	#box-shadow: 0px 0px 2px #414141;
-	border: 1px solid #414141;
+	border: 1px solid #f1f1f1;
 }
 
 .ly-page-vplan .vp-main-container {
