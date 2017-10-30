@@ -7,6 +7,17 @@
     <title>Vertretungsplan 3.0</title>
     <link rel="stylesheet" type="text/css" href="styles/w3.css" />
     <link rel="stylesheet" type="text/css" href="styles/vplan3.css" />
+
+    <!-- Google/Android manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <!-- Add to home screen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Vertretungsplan 3.0">
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    <!-- Windows-Phone add to homescreen -->
+    <meta name="msapplication-TileImage" content="images/icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#414141">
 </head>
 <body>
 <div class="ly-actionbar">
@@ -14,7 +25,7 @@
         <h2 class="vp-header">Vertretungsplan 3.0</h2>
     </div>
     <div class="w3-bar w3-light-grey">
-        <div class="nv-dashboard w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-dashboard w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -22,7 +33,7 @@
                 </svg>
             </div>
         </div>
-        <div class="nv-vplan w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-vplan w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -30,7 +41,7 @@
                 </svg>
             </div>
         </div>
-        <div class="nv-my-vplan w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-my-vplan w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -38,7 +49,7 @@
                 </svg>
             </div>
         </div>
-        <div class="nv-daymsgs w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-daymsgs w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -46,7 +57,7 @@
                 </svg>
             </div>
         </div>
-        <div class="nv-profiles w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-profiles w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -54,7 +65,7 @@
                 </svg>
             </div>
         </div>
-        <div class="nv-settings w3-bar-item w3-button w3-col s2 m2 l2">
+        <div class="nv-settings w3-bar-item w3-button w3-col s2 m2 l2 vp-bar-item">
             <div class="vp-tab">
                 <svg fill="rgba(0,0,0,0)" class="vp-icon-box" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M0 0h24v24H0z" fill="none"/>
@@ -76,19 +87,19 @@
             </div>
         </div>
 
-        <div class="ly-template-section w3-col s12 m12 l12" hidden>
+        <div class="ly-template-section w3-col s12" hidden>
             <div class="w3-container vp-vpcard vp-vpbase vp-section">
                 <p class="vp-section-title w3-center"></p>
             </div>
         </div>
 
-        <div class="ly-template-lastupdated w3-col s12 m12 l12" hidden>
+        <div class="ly-template-lastupdated w3-col s12" hidden>
             <div class="w3-container vp-vpbase w3-white">
                 <p>Stand: <span class="vp-lastupdated-date"></span></p>
             </div>
         </div>
 
-        <div class="vp-main-container">
+        <div class="vp-main-container w3-row">
 
         </div>
     </div>
