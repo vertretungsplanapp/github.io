@@ -3,6 +3,7 @@ if (typeof kotlin === 'undefined') {
 }
 var VertretungsplanApp3 = function (_, Kotlin) {
   'use strict';
+  var println = Kotlin.kotlin.io.println_s8jyv4$;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
   var substringAfter = Kotlin.kotlin.text.substringAfter_j4ogox$;
   var substringBefore = Kotlin.kotlin.text.substringBefore_j4ogox$;
@@ -25,7 +26,8 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     var actionBar = document.getElementsByClassName('ly-actionbar')[0];
     var contentContainer = document.getElementsByClassName('ly-main')[0];
     if (Kotlin.isType(actionBar, HTMLElement) && Kotlin.isType(contentContainer, HTMLElement)) {
-      contentContainer.style.marginTop = (actionBar.clientHeight + 1 | 0).toString() + 'px';
+      contentContainer.style.marginTop = (actionBar.scrollHeight + 1 | 0).toString() + 'px';
+      println('test: ' + Kotlin.toString(actionBar.scrollHeight));
     }
     var plan = (new Decoder(VERTRETUNGSPLAN_TEXT)).decode();
     var page = document.getElementsByClassName('ly-page-vplan')[0];
