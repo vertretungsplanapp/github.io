@@ -4,8 +4,8 @@ if (typeof kotlin === 'undefined') {
 var VertretungsplanApp3 = function (_, Kotlin) {
   'use strict';
   var println = Kotlin.kotlin.io.println_s8jyv4$;
-  var Unit = Kotlin.kotlin.Unit;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
+  var Unit = Kotlin.kotlin.Unit;
   var substringAfter = Kotlin.kotlin.text.substringAfter_j4ogox$;
   var substringBefore = Kotlin.kotlin.text.substringBefore_j4ogox$;
   var replace = Kotlin.kotlin.text.replace_680rmw$;
@@ -28,57 +28,13 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   PageVertretungsplan.prototype = Object.create(Page.prototype);
   PageVertretungsplan.prototype.constructor = PageVertretungsplan;
   function main(args) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
+    var tmp$;
     var navbar = (tmp$ = document.getElementsByClassName('ly-navbar')[0]) != null ? tmp$ : Kotlin.throwNPE();
     Navigator_getInstance().initialize_2rdptt$(navbar);
     var actionBar = document.getElementsByClassName('ly-actionbar')[0];
     var contentContainer = document.getElementsByClassName('ly-main')[0];
     if (Kotlin.isType(actionBar, HTMLElement) && Kotlin.isType(contentContainer, HTMLElement)) {
       println('height: ' + Kotlin.toString(actionBar.scrollHeight));
-    }
-    println(Kotlin.hashCode(new Date()));
-    var plan = (new Decoder(VERTRETUNGSPLAN_TEXT)).decode();
-    var page = document.getElementsByClassName('ly-page-vplan')[0];
-    var mainContainer = (tmp$_0 = page != null ? page.getElementsByClassName('vp-main-container') : null) != null ? tmp$_0[0] : null;
-    var vcardsContent = (tmp$_1 = page != null ? page.getElementsByClassName('ly-template-vcard') : null) != null ? tmp$_1[0] : null;
-    var sectionContent = (tmp$_2 = page != null ? page.getElementsByClassName('ly-template-section') : null) != null ? tmp$_2[0] : null;
-    var lastUpdContent = (tmp$_3 = page != null ? page.getElementsByClassName('ly-template-lastupdated') : null) != null ? tmp$_3[0] : null;
-    if (Kotlin.isType(mainContainer, Element)) {
-      var today = plan.today;
-      if ((tmp$_4 = today != null ? today.day : null) != null) {
-        var tmp$_9;
-        (tmp$_9 = createSection(tmp$_4, sectionContent)) != null && mainContainer.appendChild(tmp$_9);
-      }
-      if ((tmp$_5 = today != null ? today.entries : null) != null) {
-        var tmp$_10;
-        tmp$_10 = tmp$_5.iterator();
-        while (tmp$_10.hasNext()) {
-          var element = tmp$_10.next();
-          var tmp$_11;
-          if ((tmp$_11 = createVpCard(element, vcardsContent)) != null) {
-            mainContainer.appendChild(tmp$_11);
-          }
-        }
-      }
-      var tomorrow = plan.tomorrow;
-      if ((tmp$_6 = tomorrow != null ? tomorrow.day : null) != null) {
-        var tmp$_12;
-        (tmp$_12 = createSection(tmp$_6, sectionContent)) != null && mainContainer.appendChild(tmp$_12);
-      }
-      if ((tmp$_7 = tomorrow != null ? tomorrow.entries : null) != null) {
-        var tmp$_13;
-        tmp$_13 = tmp$_7.iterator();
-        while (tmp$_13.hasNext()) {
-          var element_0 = tmp$_13.next();
-          var tmp$_14;
-          if ((tmp$_14 = createVpCard(element_0, vcardsContent)) != null) {
-            mainContainer.appendChild(tmp$_14);
-          }
-        }
-      }
-      if ((tmp$_8 = createLastUpdated(plan.lastUpdated, lastUpdContent)) != null) {
-        mainContainer.appendChild(tmp$_8);
-      }
     }
   }
   function createVpCard(entry, vcardsContent) {
@@ -639,7 +595,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     Navigator_instance = this;
     this.pageDashboard = new Option('page:dashboard', null);
     this.pageVPlan = new Option('page:vplan', null);
-    this.pageMyVPlan = new Option('page:myvplan', null);
+    this.pageMyVPlan = new Option('page:vplan', null);
     this.pageDaymsgs = new Option('page:daymsgs', null);
     this.pageProfiles = new Option('page:profiles', null);
     this.pageSettings = new Option('page:settings', null);
@@ -702,6 +658,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     (tmp$_3 = this.tabProfiles_0) != null ? (tmp$_3.addEventListener('click', Navigator$initialize$lambda_3(this)), Unit) : null;
     this.tabSettings_0 = navbar.getElementsByClassName('nv-settings')[0];
     (tmp$_4 = this.tabSettings_0) != null ? (tmp$_4.addEventListener('click', Navigator$initialize$lambda_4(this)), Unit) : null;
+    this.pages_0.put_xwzc9p$(this.pageVPlan.name, new PageVertretungsplan());
   };
   var Map = Kotlin.kotlin.collections.Map;
   Navigator.prototype.changeTo_u4w5b9$ = function (next) {
@@ -716,6 +673,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       if (Kotlin.equals(tmp$_0.name, next.name)) {
         (tmp$_2 = next.runBefore) != null ? tmp$_2() : null;
         (tmp$_3 = this.pages_0.get_11rb$(tmp$_0.name)) != null ? (tmp$_3.reload(), Unit) : null;
+        this.current_0 = next;
         return;
       }
     }
@@ -763,15 +721,10 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageVertretungsplan() {
     Page.call(this, 'ly-page-vplan');
-    this.templateVpCard_0 = null;
-    this.templateSection_0 = null;
-    this.templateLastUpdated_0 = null;
-  }
-  PageVertretungsplan.prototype.initialize = function () {
     this.templateVpCard_0 = this.page.getElementsByClassName('ly-template-vcard')[0];
     this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
     this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
-  };
+  }
   PageVertretungsplan.prototype.load = function () {
     var mainContainer = this.page.getElementsByClassName('vp-main-container')[0];
     if (mainContainer != null) {
@@ -794,14 +747,17 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   PageVertretungsplan.prototype.displayBlock_0 = function (block, mainContainer) {
     if (block != null) {
-      this.createSection_0(block.day, this.templateSection_0);
       var tmp$;
-      tmp$ = block.entries.iterator();
-      while (tmp$.hasNext()) {
-        var element = tmp$.next();
-        var tmp$_0;
-        if ((tmp$_0 = this.createVpCard_0(element, this.templateVpCard_0)) != null) {
-          mainContainer.appendChild(tmp$_0);
+      if ((tmp$ = this.createSection_0(block.day, this.templateSection_0)) != null) {
+        mainContainer.appendChild(tmp$);
+      }
+      var tmp$_0;
+      tmp$_0 = block.entries.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        var tmp$_1;
+        if ((tmp$_1 = this.createVpCard_0(element, this.templateVpCard_0)) != null) {
+          mainContainer.appendChild(tmp$_1);
         }
       }
     }
