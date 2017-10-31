@@ -50,6 +50,7 @@ html, body {
 	color: #414141;
 	font-family: 'Roboto-Light';
 	font-size: 33px;
+	white-space: nowrap;
 }
 
 @media (min-width:601px) {
