@@ -77,9 +77,12 @@
     <div class="vp-divider"></div>
 </div>
 <div class="ly-main">
+    <!----------------------------------------------------------------------------------------------------------------->
+    <!-- VPLAN PAGE -->
+    <!----------------------------------------------------------------------------------------------------------------->
     <div class="ly-page-vplan" hidden>
         <div class="ly-template-vcard w3-col s4 m3 l2" hidden>
-            <div class="w3-container vp-vpcard vp-vpbase w3-white">
+            <div class="w3-container vp-vpcard vp-vpbase">
                 <p>
                     <span class="vp-class">Class</span> <span class="vp-subject">Su</span><br />
                     <span>Std: <span class="vp-hours">Hours</span></span>
@@ -104,6 +107,60 @@
         </div>
     </div>
 
+    <!----------------------------------------------------------------------------------------------------------------->
+    <!-- DAYMESSAGES PAGE -->
+    <!----------------------------------------------------------------------------------------------------------------->
+    <div class="ly-page-daymsgs" hidden>
+        <div class="ly-template-daymsgscard w3-col s12" hidden>
+            <div class="w3-container vp-vpcard vp-vpbase w3-white">
+                <p class="vp-daymsgs-content"></p>
+            </div>
+        </div>
+
+        <div class="ly-template-section w3-col s12" hidden>
+            <div class="w3-container vp-vpcard vp-vpbase vp-section">
+                <p class="vp-section-title w3-center"></p>
+            </div>
+        </div>
+
+        <div class="ly-template-lastupdated w3-col s12" hidden>
+            <div class="w3-container vp-vpbase w3-white">
+                <p>Stand: <span class="vp-lastupdated-date"></span></p>
+            </div>
+        </div>
+
+        <div class="vp-main-container w3-row">
+
+        </div>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------->
+    <!-- PROFILES PAGE -->
+    <!----------------------------------------------------------------------------------------------------------------->
+    <div class="ly-page-profiles">
+        <ul hidden>
+            <li class="ly-template-profile w3-bar" hidden>
+                <svg fill="rgba(0,0,0,0)" class="w3-bar-item" width="49px" height="49px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path class="vp-icon-fill" d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z" />
+                </svg>
+                <span class="vp-profile-delete w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
+                <div class="w3-bar-item">
+                    <span class="vp-name w3-large">Lennart</span>
+                    <br />
+                    <span class="vp-clazz">Klasse 12</span>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="vp-list-container w3-ul">
+
+        </ul>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------->
+    <!-- LOGIN PAGE -->
+    <!----------------------------------------------------------------------------------------------------------------->
     <div class="ly-page-login" hidden>
         <div class="w3-container">
             <h2>Login</h2>

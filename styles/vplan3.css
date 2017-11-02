@@ -33,6 +33,13 @@ html, body {
 	stroke-dasharray: none;
 }
 
+.vp-icon-fill {
+	opacity: 1;
+	fill-rule: nonzero;
+	fill: #414141;
+	fill-opacity: 1;
+}
+
 .vp-bar-item {
 	padding: 8px 0px!important
 }
@@ -101,7 +108,8 @@ html, body {
 	border: 1px solid #f1f1f1;
 }
 
-.ly-page-vplan .vp-main-container {
+.ly-page-vplan .vp-main-container,
+.ly-page-daymsgs .vp-main-container {
 	margin: 2px;
 }
 

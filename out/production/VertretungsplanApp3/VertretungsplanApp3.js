@@ -20,13 +20,23 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
+  var Enum = Kotlin.kotlin.Enum;
+  var Regex = Kotlin.kotlin.text.Regex_61zpoe$;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
-  OnlineplanManager.prototype = Object.create(Manager.prototype);
+  OnlineplanManager.prototype = Object.create(DownloadManager.prototype);
   OnlineplanManager.prototype.constructor = OnlineplanManager;
+  FilterResult.prototype = Object.create(Enum.prototype);
+  FilterResult.prototype.constructor = FilterResult;
+  MultiCoursesHandler.prototype = Object.create(Handler.prototype);
+  MultiCoursesHandler.prototype.constructor = MultiCoursesHandler;
+  PageDaymsgs.prototype = Object.create(Page.prototype);
+  PageDaymsgs.prototype.constructor = PageDaymsgs;
   PageLogin.prototype = Object.create(Page.prototype);
   PageLogin.prototype.constructor = PageLogin;
+  PageProfiles.prototype = Object.create(Page.prototype);
+  PageProfiles.prototype.constructor = PageProfiles;
   PageVertretungsplan.prototype = Object.create(Page.prototype);
   PageVertretungsplan.prototype.constructor = PageVertretungsplan;
   function main(args) {
@@ -413,7 +423,24 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.classes, other.classes) && Kotlin.equals(this.hasClassBrackets, other.hasClassBrackets) && Kotlin.equals(this.teachers, other.teachers) && Kotlin.equals(this.subjects, other.subjects) && Kotlin.equals(this.rooms, other.rooms) && Kotlin.equals(this.hours, other.hours) && Kotlin.equals(this.cancelled, other.cancelled) && Kotlin.equals(this.coSupervision, other.coSupervision) && Kotlin.equals(this.extraText, other.extraText) && Kotlin.equals(this.movedFrom, other.movedFrom)))));
   };
   function VPOtherclass(name) {
+    VPOtherclass$Companion_getInstance();
     this.name = name;
+  }
+  function VPOtherclass$Companion() {
+    VPOtherclass$Companion_instance = this;
+    this.className = 'VPOtherclass';
+  }
+  VPOtherclass$Companion.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var VPOtherclass$Companion_instance = null;
+  function VPOtherclass$Companion_getInstance() {
+    if (VPOtherclass$Companion_instance === null) {
+      new VPOtherclass$Companion();
+    }
+    return VPOtherclass$Companion_instance;
   }
   VPOtherclass.prototype.fullName = function () {
     return this.name;
@@ -421,12 +448,16 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   VPOtherclass.prototype.toString = function () {
     return this.fullName();
   };
+  VPOtherclass.prototype.className = function () {
+    return VPOtherclass$Companion_getInstance().className;
+  };
   VPOtherclass.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: 'VPOtherclass',
     interfaces: [VPClass]
   };
   function VPSchoolclass(toParse) {
+    VPSchoolclass$Companion_getInstance();
     this.year_tg0m8x$_0 = 0;
     this.extension_38xtuh$_0 = '';
     if (startsWith(toParse, '11') || startsWith(toParse, '12') || startsWith(toParse, '13')) {
@@ -436,6 +467,22 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       this.year = toInt(substring(toParse, until(0, 1)));
       this.extension = toParse.substring(1);
     }
+  }
+  function VPSchoolclass$Companion() {
+    VPSchoolclass$Companion_instance = this;
+    this.className = 'VPSchoolclass';
+  }
+  VPSchoolclass$Companion.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var VPSchoolclass$Companion_instance = null;
+  function VPSchoolclass$Companion_getInstance() {
+    if (VPSchoolclass$Companion_instance === null) {
+      new VPSchoolclass$Companion();
+    }
+    return VPSchoolclass$Companion_instance;
   }
   Object.defineProperty(VPSchoolclass.prototype, 'year', {
     get: function () {
@@ -458,6 +505,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   VPSchoolclass.prototype.toString = function () {
     return this.fullName();
+  };
+  VPSchoolclass.prototype.className = function () {
+    return VPSchoolclass$Companion_getInstance().className;
   };
   VPSchoolclass.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -499,60 +549,67 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   Vertretungsplan.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.today, other.today) && Kotlin.equals(this.tomorrow, other.tomorrow) && Kotlin.equals(this.lastUpdated, other.lastUpdated)))));
   };
-  function Manager(url, converter, authorization, charset) {
+  function DownloadManager(url, converter, authorization, charset) {
     if (authorization === void 0)
       authorization = '';
     if (charset === void 0)
       charset = 'UTF-8';
     this.url = url;
-    this.converter_vhwdi2$_0 = converter;
+    this.converter_gusmdq$_0 = converter;
     this.authorization = authorization;
     this.charset = charset;
-    this.fileContent_i9a3k9$_0 = '';
-    this.currentFile_1higk1$_0 = null;
+    this.fileContent_uww301$_0 = '';
+    this.currentFile_e54fzt$_0 = null;
   }
-  function Manager$get$lambda$lambda$lambda(this$Manager, closure$resolve) {
+  function DownloadManager$get$lambda$lambda$lambda$lambda(closure$reader, this$DownloadManager, closure$resolve) {
     return function (it) {
-      println('checking for same content');
-      if (Kotlin.equals(it, this$Manager.fileContent_i9a3k9$_0)) {
-        println('same content');
-        closure$resolve(this$Manager.currentFile_1higk1$_0);
+      var tmp$;
+      var result = typeof (tmp$ = closure$reader.result) === 'string' ? tmp$ : Kotlin.throwCCE();
+      if (Kotlin.equals(result, this$DownloadManager.fileContent_uww301$_0)) {
+        closure$resolve(this$DownloadManager.currentFile_e54fzt$_0);
       }
        else {
-        println('settings file content and converting...');
-        this$Manager.fileContent_i9a3k9$_0 = it;
-        this$Manager.currentFile_1higk1$_0 = this$Manager.converter_vhwdi2$_0(it);
-        closure$resolve(this$Manager.currentFile_1higk1$_0);
+        this$DownloadManager.fileContent_uww301$_0 = result;
+        this$DownloadManager.currentFile_e54fzt$_0 = this$DownloadManager.converter_gusmdq$_0(result);
+        closure$resolve(this$DownloadManager.currentFile_e54fzt$_0);
       }
       return Unit;
     };
   }
-  function Manager$get$lambda$lambda(this$Manager, closure$resolve, closure$reject) {
+  function DownloadManager$get$lambda$lambda$lambda(this$DownloadManager, closure$resolve) {
     return function (it) {
-      return it.text().then(Manager$get$lambda$lambda$lambda(this$Manager, closure$resolve)).catch(closure$reject);
+      var reader = new FileReader();
+      reader.addEventListener('loadend', DownloadManager$get$lambda$lambda$lambda$lambda(reader, this$DownloadManager, closure$resolve));
+      reader.readAsText(it, this$DownloadManager.charset);
+      return Unit;
     };
   }
-  function Manager$get$lambda(this$Manager) {
+  function DownloadManager$get$lambda$lambda(this$DownloadManager, closure$resolve) {
+    return function (it) {
+      return it.blob().then(DownloadManager$get$lambda$lambda$lambda(this$DownloadManager, closure$resolve));
+    };
+  }
+  function DownloadManager$get$lambda(this$DownloadManager) {
     return function (resolve, reject) {
       var formData = new FormData();
-      if (!(this$Manager.authorization.length === 0)) {
+      if (!(this$DownloadManager.authorization.length === 0)) {
         formData.append('authorization', LoginManager_getInstance().get());
       }
-      window.fetch(this$Manager.url).then(Manager$get$lambda$lambda(this$Manager, resolve, reject)).catch(reject);
+      window.fetch(this$DownloadManager.url).then(DownloadManager$get$lambda$lambda(this$DownloadManager, resolve)).catch(reject);
       return Unit;
     };
   }
-  Manager.prototype.get = function () {
-    return new Promise(Manager$get$lambda(this));
+  DownloadManager.prototype.get = function () {
+    return new Promise(DownloadManager$get$lambda(this));
   };
-  Manager.$metadata$ = {
+  DownloadManager.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
-    simpleName: 'Manager',
+    simpleName: 'DownloadManager',
     interfaces: []
   };
   function OnlineplanManager() {
     OnlineplanManager_instance = this;
-    Manager.call(this, VERTRETUNGSPLAN_URL, Kotlin.getCallableRef('parseVertretungsplan', function ($receiver, content) {
+    DownloadManager.call(this, VERTRETUNGSPLAN_URL, Kotlin.getCallableRef('parseVertretungsplan', function ($receiver, content) {
       return $receiver.parseVertretungsplan_0(content);
     }.bind(null, OnlineplanManager_getInstance())), LoginManager_getInstance().get(), 'ISO-8859-1');
   }
@@ -562,7 +619,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   OnlineplanManager.$metadata$ = {
     kind: Kotlin.Kind.OBJECT,
     simpleName: 'OnlineplanManager',
-    interfaces: [Manager]
+    interfaces: [DownloadManager]
   };
   var OnlineplanManager_instance = null;
   function OnlineplanManager_getInstance() {
@@ -570,6 +627,324 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       new OnlineplanManager();
     }
     return OnlineplanManager_instance;
+  }
+  function Course(internalName, data) {
+    this.internalName = internalName;
+    this.data = data;
+  }
+  Course.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'Course',
+    interfaces: []
+  };
+  Course.prototype.component1 = function () {
+    return this.internalName;
+  };
+  Course.prototype.component2 = function () {
+    return this.data;
+  };
+  Course.prototype.copy_puj7f4$ = function (internalName, data) {
+    return new Course(internalName === void 0 ? this.internalName : internalName, data === void 0 ? this.data : data);
+  };
+  Course.prototype.toString = function () {
+    return 'Course(internalName=' + Kotlin.toString(this.internalName) + (', data=' + Kotlin.toString(this.data)) + ')';
+  };
+  Course.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.internalName) | 0;
+    result = result * 31 + Kotlin.hashCode(this.data) | 0;
+    return result;
+  };
+  Course.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.internalName, other.internalName) && Kotlin.equals(this.data, other.data)))));
+  };
+  function ExtendedFR() {
+    this.filterResult = FilterResult$HIDE_getInstance();
+    this.profiles = ArrayList_init();
+  }
+  ExtendedFR.prototype.frIncreaseOnly_k9n0n6$ = function (result) {
+    if (result.score > this.filterResult.score) {
+      this.filterResult = result;
+    }
+  };
+  ExtendedFR.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'ExtendedFR',
+    interfaces: []
+  };
+  function FilterResult(name, ordinal, score, displayNormal, displayWithGreyOut) {
+    Enum.call(this);
+    this.score = score;
+    this.displayNormal = displayNormal;
+    this.displayWithGreyOut = displayWithGreyOut;
+    this.name$ = name;
+    this.ordinal$ = ordinal;
+  }
+  function FilterResult_initFields() {
+    FilterResult_initFields = function () {
+    };
+    FilterResult$HIDE_instance = new FilterResult('HIDE', 0, 0, false, false);
+    FilterResult$DISPLAY_instance = new FilterResult('DISPLAY', 1, 2, true, true);
+    FilterResult$GREY_OUT_instance = new FilterResult('GREY_OUT', 2, 1, false, true);
+  }
+  var FilterResult$HIDE_instance;
+  function FilterResult$HIDE_getInstance() {
+    FilterResult_initFields();
+    return FilterResult$HIDE_instance;
+  }
+  var FilterResult$DISPLAY_instance;
+  function FilterResult$DISPLAY_getInstance() {
+    FilterResult_initFields();
+    return FilterResult$DISPLAY_instance;
+  }
+  var FilterResult$GREY_OUT_instance;
+  function FilterResult$GREY_OUT_getInstance() {
+    FilterResult_initFields();
+    return FilterResult$GREY_OUT_instance;
+  }
+  FilterResult.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'FilterResult',
+    interfaces: [Enum]
+  };
+  function FilterResult$values() {
+    return [FilterResult$HIDE_getInstance(), FilterResult$DISPLAY_getInstance(), FilterResult$GREY_OUT_getInstance()];
+  }
+  FilterResult.values = FilterResult$values;
+  function FilterResult$valueOf(name) {
+    switch (name) {
+      case 'HIDE':
+        return FilterResult$HIDE_getInstance();
+      case 'DISPLAY':
+        return FilterResult$DISPLAY_getInstance();
+      case 'GREY_OUT':
+        return FilterResult$GREY_OUT_getInstance();
+      default:Kotlin.throwISE('No enum constant lvideos.vplan3.management.profiles.FilterResult.' + name);
+    }
+  }
+  FilterResult.valueOf_61zpoe$ = FilterResult$valueOf;
+  function Profile(uniqueId, name, clazz, courses, color, disabled) {
+    if (color === void 0)
+      color = 'FFFFFF';
+    if (disabled === void 0)
+      disabled = false;
+    this.uniqueId = uniqueId;
+    this.name = name;
+    this.clazz = clazz;
+    this.courses = courses;
+    this.color = color;
+    this.disabled = disabled;
+  }
+  Profile.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'Profile',
+    interfaces: []
+  };
+  Profile.prototype.component1 = function () {
+    return this.uniqueId;
+  };
+  Profile.prototype.component2 = function () {
+    return this.name;
+  };
+  Profile.prototype.component3 = function () {
+    return this.clazz;
+  };
+  Profile.prototype.component4 = function () {
+    return this.courses;
+  };
+  Profile.prototype.component5 = function () {
+    return this.color;
+  };
+  Profile.prototype.component6 = function () {
+    return this.disabled;
+  };
+  Profile.prototype.copy_ocn07t$ = function (uniqueId, name, clazz, courses, color, disabled) {
+    return new Profile(uniqueId === void 0 ? this.uniqueId : uniqueId, name === void 0 ? this.name : name, clazz === void 0 ? this.clazz : clazz, courses === void 0 ? this.courses : courses, color === void 0 ? this.color : color, disabled === void 0 ? this.disabled : disabled);
+  };
+  Profile.prototype.toString = function () {
+    return 'Profile(uniqueId=' + Kotlin.toString(this.uniqueId) + (', name=' + Kotlin.toString(this.name)) + (', clazz=' + Kotlin.toString(this.clazz)) + (', courses=' + Kotlin.toString(this.courses)) + (', color=' + Kotlin.toString(this.color)) + (', disabled=' + Kotlin.toString(this.disabled)) + ')';
+  };
+  Profile.prototype.hashCode = function () {
+    var result = 0;
+    result = result * 31 + Kotlin.hashCode(this.uniqueId) | 0;
+    result = result * 31 + Kotlin.hashCode(this.name) | 0;
+    result = result * 31 + Kotlin.hashCode(this.clazz) | 0;
+    result = result * 31 + Kotlin.hashCode(this.courses) | 0;
+    result = result * 31 + Kotlin.hashCode(this.color) | 0;
+    result = result * 31 + Kotlin.hashCode(this.disabled) | 0;
+    return result;
+  };
+  Profile.prototype.equals = function (other) {
+    return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.uniqueId, other.uniqueId) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.clazz, other.clazz) && Kotlin.equals(this.courses, other.courses) && Kotlin.equals(this.color, other.color) && Kotlin.equals(this.disabled, other.disabled)))));
+  };
+  function ProfilesManager() {
+    ProfilesManager_instance = this;
+    this.profiles = ArrayList_init();
+    this.handlers_0 = ArrayList_init();
+    this.useFilter = false;
+    this.useGreyOut = false;
+    this.handlers_0.add_11rb$(new MultiCoursesHandler('oberstufe', Regex('.{3,}'), new IntRange(11, 13)));
+    var list = ArrayList_init();
+    list.add_11rb$(new Course('oberstufe', 'ch1,ge1'));
+    this.profiles.add_11rb$(new Profile(Kotlin.Long.ZERO, 'Lennart', new VPSchoolclass('11'), list, 'ffe082'));
+    this.profiles.add_11rb$(new Profile(Kotlin.Long.ONE, 'Test', new VPSchoolclass('10F2'), ArrayList_init()));
+  }
+  ProfilesManager.prototype.filterEntry_pnv8wy$ = function (entry) {
+    var finalFR = new ExtendedFR();
+    if (!this.useFilter) {
+      finalFR.frIncreaseOnly_k9n0n6$(FilterResult$DISPLAY_getInstance());
+      return finalFR;
+    }
+    var tmp$;
+    tmp$ = this.profiles.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      action$break: do {
+        if (element.disabled) {
+          break action$break;
+        }
+        var profile = element;
+        var tmp$_0;
+        tmp$_0 = entry.classes.iterator();
+        while (tmp$_0.hasNext()) {
+          var element_0 = tmp$_0.next();
+          if (Kotlin.equals(profile.clazz.fullName(), element_0.fullName())) {
+            var amountHandlersUsed = {v: 0};
+            var tmp$_1;
+            tmp$_1 = profile.courses.iterator();
+            while (tmp$_1.hasNext()) {
+              var element_1 = tmp$_1.next();
+              var course = element_1;
+              var tmp$_2;
+              tmp$_2 = this.handlers_0.iterator();
+              while (tmp$_2.hasNext()) {
+                var element_2 = tmp$_2.next();
+                if (element_2.worksWith_sv3gk2$(course.internalName, profile)) {
+                  amountHandlersUsed.v = amountHandlersUsed.v + 1 | 0;
+                  var result = element_2.filter_nvegbj$(course, entry, this.useGreyOut);
+                  if (result === FilterResult$DISPLAY_getInstance() || (result === FilterResult$GREY_OUT_getInstance() && this.useGreyOut)) {
+                    finalFR.profiles.add_11rb$(profile);
+                    finalFR.frIncreaseOnly_k9n0n6$(result);
+                  }
+                }
+              }
+            }
+            if (amountHandlersUsed.v === 0) {
+              finalFR.profiles.add_11rb$(profile);
+              finalFR.frIncreaseOnly_k9n0n6$(FilterResult$DISPLAY_getInstance());
+            }
+          }
+        }
+      }
+       while (false);
+    }
+    return finalFR;
+  };
+  ProfilesManager.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'ProfilesManager',
+    interfaces: []
+  };
+  var ProfilesManager_instance = null;
+  function ProfilesManager_getInstance() {
+    if (ProfilesManager_instance === null) {
+      new ProfilesManager();
+    }
+    return ProfilesManager_instance;
+  }
+  function Handler(courseInternalName, years) {
+    this.courseInternalName = courseInternalName;
+    this.years = years;
+  }
+  Handler.prototype.worksForName_61zpoe$ = function (internalName) {
+    return Kotlin.equals(this.courseInternalName, internalName);
+  };
+  Handler.prototype.worksWith_sv3gk2$ = function (internalName, profile) {
+    return this.worksForName_61zpoe$(internalName) && this.worksWithProfile_daokzk$(profile);
+  };
+  Handler.prototype.worksWithProfile_daokzk$ = function (profile) {
+    var clazz = profile.clazz;
+    if (Kotlin.isType(clazz, VPSchoolclass)) {
+      return this.years.contains_mef7kx$(clazz.year);
+    }
+    return false;
+  };
+  Handler.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'Handler',
+    interfaces: []
+  };
+  function MultiCoursesHandler(internalName, pattern, years) {
+    Handler.call(this, internalName, years);
+    this.pattern_0 = pattern;
+  }
+  MultiCoursesHandler.prototype.filter_nvegbj$ = function (course, entry, useGreyOut) {
+    var result = FilterResult$HIDE_getInstance();
+    if (this.pattern_0.matches_6bul2c$(entry.subjects.normal) && useGreyOut) {
+      result = FilterResult$GREY_OUT_getInstance();
+    }
+    if (contains(course.data, entry.subjects.normal)) {
+      result = FilterResult$DISPLAY_getInstance();
+    }
+    return result;
+  };
+  MultiCoursesHandler.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'MultiCoursesHandler',
+    interfaces: [Handler]
+  };
+  function ProfilesIO() {
+    ProfilesIO_instance = this;
+  }
+  ProfilesIO.prototype.loadProfiles = function () {
+    var list = ArrayList_init();
+    var content = '#[[uniqueId=0][name=Lennart][clazz=11][courses=(oberstufe=ch1,ge1)][color=ffe082][disabled=false]],#[[uniqueId=1][name=Test][clazz=10F2][courses=][color=FFFFFF][disabled=false]]';
+    var tmp$;
+    tmp$ = split(content, ['#']).iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      removeSurrounding(element, '[', ']');
+    }
+    return list;
+  };
+  ProfilesIO.prototype.saveProfiles_1eesz$ = function (profiles) {
+    var builder = new StringBuilder();
+    var tmp$;
+    tmp$ = profiles.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      builder.append_gw00v9$('#').append_gw00v9$(replace(this.serializeProfile_0(element), '#', '')).append_gw00v9$(',');
+    }
+    println(removeSuffix(builder, ','));
+  };
+  ProfilesIO.prototype.serializeProfile_0 = function (profile) {
+    var builder = new StringBuilder('[');
+    builder.append_gw00v9$('[uniqueId=' + profile.uniqueId + '][name=' + profile.name + '][clazz=' + profile.clazz + ']');
+    builder.append_gw00v9$('[courses=' + this.serializeCourses_0(profile.courses) + '][color=' + profile.color + '][disabled=' + profile.disabled + ']');
+    builder.append_gw00v9$(']');
+    return builder.toString();
+  };
+  ProfilesIO.prototype.serializeCourses_0 = function (courses) {
+    var builder = new StringBuilder();
+    var tmp$;
+    tmp$ = courses.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      builder.append_gw00v9$('(' + element.internalName + '=' + element.data + ')');
+    }
+    return builder.toString();
+  };
+  ProfilesIO.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'ProfilesIO',
+    interfaces: []
+  };
+  var ProfilesIO_instance = null;
+  function ProfilesIO_getInstance() {
+    if (ProfilesIO_instance === null) {
+      new ProfilesIO();
+    }
+    return ProfilesIO_instance;
   }
   function LoginManager() {
     LoginManager_instance = this;
@@ -617,8 +992,8 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     Navigator_instance = this;
     this.pageLogin = new Option('page:login', null);
     this.pageDashboard = new Option('page:dashboard', null);
-    this.pageVPlan = new Option('page:vplan', null);
-    this.pageMyVPlan = new Option('page:vplan', null);
+    this.pageVPlan = new Option('page:vplan', Navigator$pageVPlan$lambda);
+    this.pageMyVPlan = new Option('page:vplan', Navigator$pageMyVPlan$lambda);
     this.pageDaymsgs = new Option('page:daymsgs', null);
     this.pageProfiles = new Option('page:profiles', null);
     this.pageSettings = new Option('page:settings', null);
@@ -683,6 +1058,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     (tmp$_4 = this.tabSettings_0) != null ? (tmp$_4.addEventListener('click', Navigator$initialize$lambda_4(this)), Unit) : null;
     this.pages_0.put_xwzc9p$(this.pageLogin.name, new PageLogin());
     this.pages_0.put_xwzc9p$(this.pageVPlan.name, new PageVertretungsplan());
+    this.pages_0.put_xwzc9p$(this.pageDaymsgs.name, new PageDaymsgs());
     if (LoginManager_getInstance().hasCorrectLoginData()) {
       this.changeTo_u4w5b9$(this.pageVPlan);
     }
@@ -694,7 +1070,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   Navigator.prototype.changeTo_u4w5b9$ = function (option) {
     var tmp$, tmp$_0, tmp$_1;
     var next = {v: option};
-    println('Changing to page ' + next.v.name + '...');
+    println('Changing to ' + next.v.name + '...');
     if ((tmp$ = this.current_0) != null) {
       if (tmp$ === next.v)
         return;
@@ -722,6 +1098,14 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       this.current_0 = next.v;
     }
   };
+  function Navigator$pageVPlan$lambda() {
+    ProfilesManager_getInstance().useFilter = false;
+    return Unit;
+  }
+  function Navigator$pageMyVPlan$lambda() {
+    ProfilesManager_getInstance().useFilter = true;
+    return Unit;
+  }
   Navigator.$metadata$ = {
     kind: Kotlin.Kind.OBJECT,
     simpleName: 'Navigator',
@@ -751,6 +1135,97 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     kind: Kotlin.Kind.CLASS,
     simpleName: 'Page',
     interfaces: []
+  };
+  function PageDaymsgs() {
+    Page.call(this, 'ly-page-daymsgs');
+    this.templateDaymsgsCard_0 = this.page.getElementsByClassName('ly-template-daymsgscard')[0];
+    this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
+    this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
+  }
+  function PageDaymsgs$load$lambda$lambda(closure$mainContainer, this$PageDaymsgs) {
+    return function (it) {
+      var tmp$;
+      if (it != null) {
+        var closure$mainContainer_0 = closure$mainContainer;
+        var this$PageDaymsgs_0 = this$PageDaymsgs;
+        var tmp$_0;
+        this$PageDaymsgs_0.displayBlock_0(it.today, closure$mainContainer_0);
+        this$PageDaymsgs_0.displayBlock_0(it.tomorrow, closure$mainContainer_0);
+        tmp$ = (tmp$_0 = this$PageDaymsgs_0.createLastUpdated_0(it.lastUpdated, this$PageDaymsgs_0.templateLastUpdated_0)) != null ? closure$mainContainer_0.appendChild(tmp$_0) : null;
+      }
+       else
+        tmp$ = null;
+      return tmp$;
+    };
+  }
+  PageDaymsgs.prototype.load = function () {
+    var mainContainer = this.page.getElementsByClassName('vp-main-container')[0];
+    if (mainContainer != null) {
+      var tmp$;
+      while (mainContainer.firstChild !== null) {
+        if ((tmp$ = mainContainer.firstChild) != null) {
+          mainContainer.removeChild(tmp$);
+        }
+      }
+      OnlineplanManager_getInstance().get().then(PageDaymsgs$load$lambda$lambda(mainContainer, this));
+    }
+  };
+  PageDaymsgs.prototype.reload = function () {
+  };
+  PageDaymsgs.prototype.displayBlock_0 = function (block, mainContainer) {
+    if (block != null) {
+      var tmp$;
+      if ((tmp$ = this.createSection_0(block.day, this.templateSection_0)) != null) {
+        mainContainer.appendChild(tmp$);
+      }
+      var tmp$_0;
+      tmp$_0 = block.messages.iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        var tmp$_1;
+        if ((tmp$_1 = this.createDaymsgsCard_0(element, this.templateDaymsgsCard_0)) != null) {
+          mainContainer.appendChild(tmp$_1);
+        }
+      }
+    }
+  };
+  PageDaymsgs.prototype.createDaymsgsCard_0 = function (message, daymsgsCardContent) {
+    var tmp$;
+    var daymsgsCard = daymsgsCardContent != null ? daymsgsCardContent.cloneNode(true) : null;
+    if (Kotlin.isType(daymsgsCard, Element)) {
+      daymsgsCard.removeAttribute('hidden');
+      removeClass(daymsgsCard, ['ly-template-vcard']);
+      (tmp$ = daymsgsCard.getElementsByClassName('vp-daymsgs-content')[0]) != null ? (tmp$.innerHTML = message.message) : null;
+      return daymsgsCard;
+    }
+    return null;
+  };
+  PageDaymsgs.prototype.createSection_0 = function (day, sectionContent) {
+    var tmp$;
+    var section = sectionContent != null ? sectionContent.cloneNode(true) : null;
+    if (Kotlin.isType(section, Element)) {
+      section.removeAttribute('hidden');
+      removeClass(section, ['ly-template-section']);
+      (tmp$ = section.getElementsByClassName('vp-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
+      return section;
+    }
+    return null;
+  };
+  PageDaymsgs.prototype.createLastUpdated_0 = function (lastUpdated, content) {
+    var tmp$;
+    var section = content != null ? content.cloneNode(true) : null;
+    if (Kotlin.isType(section, Element)) {
+      section.removeAttribute('hidden');
+      removeClass(section, ['ly-template-lastupdated']);
+      (tmp$ = section.getElementsByClassName('vp-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
+      return section;
+    }
+    return null;
+  };
+  PageDaymsgs.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'PageDaymsgs',
+    interfaces: [Page]
   };
   function PageLogin() {
     Page.call(this, 'ly-page-login');
@@ -813,6 +1288,28 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     simpleName: 'PageLogin',
     interfaces: [Page]
   };
+  function PageProfiles() {
+    Page.call(this, 'ly-page-profiles');
+    this.templateProfile_0 = document.getElementsByClassName('ly-template-profile')[0];
+  }
+  PageProfiles.prototype.load = function () {
+    var listContainer = this.page.getElementsByClassName('vp-list-container')[0];
+    if (listContainer != null) {
+      var tmp$;
+      while (listContainer.firstChild !== null) {
+        if ((tmp$ = listContainer.firstChild) != null) {
+          listContainer.removeChild(tmp$);
+        }
+      }
+    }
+  };
+  PageProfiles.prototype.reload = function () {
+  };
+  PageProfiles.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'PageProfiles',
+    interfaces: [Page]
+  };
   function PageVertretungsplan() {
     Page.call(this, 'ly-page-vplan');
     this.templateVpCard_0 = this.page.getElementsByClassName('ly-template-vcard')[0];
@@ -861,25 +1358,44 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       while (tmp$_0.hasNext()) {
         var element = tmp$_0.next();
         var tmp$_1;
-        if ((tmp$_1 = this.createVpCard_0(element, this.templateVpCard_0)) != null) {
-          mainContainer.appendChild(tmp$_1);
+        var result = ProfilesManager_getInstance().filterEntry_pnv8wy$(element);
+        if (result.filterResult === FilterResult$DISPLAY_getInstance()) {
+          if ((tmp$_1 = this.createVpCard_0(element, this.templateVpCard_0, this.mixColor_0(result))) != null) {
+            mainContainer.appendChild(tmp$_1);
+          }
         }
       }
     }
   };
-  PageVertretungsplan.prototype.createVpCard_0 = function (entry, vcardsContent) {
+  PageVertretungsplan.prototype.mixColor_0 = function (result) {
+    var mix = {v: ''};
+    var tmp$;
+    tmp$ = result.profiles.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      mix.v = element.color;
+    }
+    return mix.v.length === 0 || Kotlin.equals(mix.v, 'FFFFFF') ? null : mix.v;
+  };
+  PageVertretungsplan.prototype.createVpCard_0 = function (entry, vcardsContent, color) {
     var tmp$, tmp$_0, tmp$_1;
     var vpCard = vcardsContent != null ? vcardsContent.cloneNode(true) : null;
     if (Kotlin.isType(vpCard, Element)) {
       vpCard.removeAttribute('hidden');
       removeClass(vpCard, ['ly-template-vcard']);
+      if (color != null) {
+        var card = vpCard.getElementsByClassName('w3-container')[0];
+        if (Kotlin.isType(card, HTMLDivElement)) {
+          card.style.backgroundColor = '#' + Kotlin.toString(color);
+        }
+      }
       (tmp$ = vpCard.getElementsByClassName('vp-class')[0]) != null ? (tmp$.innerHTML = entry.classesAsString()) : null;
       (tmp$_0 = vpCard.getElementsByClassName('vp-subject')[0]) != null ? (tmp$_0.innerHTML = entry.subjectDisplayString()) : null;
       (tmp$_1 = vpCard.getElementsByClassName('vp-hours')[0]) != null ? (tmp$_1.innerHTML = entry.hours) : null;
       if (entry.cancelled) {
         var subDiv = vpCard.getElementsByTagName('div')[0];
         if (Kotlin.isType(subDiv, HTMLDivElement)) {
-          subDiv.style.border = '1px solid #FF5722';
+          subDiv.style.border = '1px solid #FF6F22';
         }
       }
       return vpCard;
@@ -944,14 +1460,44 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   package$decoder.VPDaymessage = VPDaymessage;
   VPEntry.Info = VPEntry$Info;
   package$decoder.VPEntry = VPEntry;
+  Object.defineProperty(VPOtherclass, 'Companion', {
+    get: VPOtherclass$Companion_getInstance
+  });
   package$decoder.VPOtherclass = VPOtherclass;
+  Object.defineProperty(VPSchoolclass, 'Companion', {
+    get: VPSchoolclass$Companion_getInstance
+  });
   package$decoder.VPSchoolclass = VPSchoolclass;
   package$decoder.Vertretungsplan = Vertretungsplan;
   var package$management = package$vplan3.management || (package$vplan3.management = {});
   var package$downloaders = package$management.downloaders || (package$management.downloaders = {});
-  package$downloaders.Manager = Manager;
+  package$downloaders.DownloadManager = DownloadManager;
   Object.defineProperty(package$downloaders, 'OnlineplanManager', {
     get: OnlineplanManager_getInstance
+  });
+  var package$profiles = package$management.profiles || (package$management.profiles = {});
+  package$profiles.Course = Course;
+  package$profiles.ExtendedFR = ExtendedFR;
+  Object.defineProperty(FilterResult, 'HIDE', {
+    get: FilterResult$HIDE_getInstance
+  });
+  Object.defineProperty(FilterResult, 'DISPLAY', {
+    get: FilterResult$DISPLAY_getInstance
+  });
+  Object.defineProperty(FilterResult, 'GREY_OUT', {
+    get: FilterResult$GREY_OUT_getInstance
+  });
+  package$profiles.FilterResult = FilterResult;
+  package$profiles.Profile = Profile;
+  Object.defineProperty(package$profiles, 'ProfilesManager', {
+    get: ProfilesManager_getInstance
+  });
+  var package$handlers = package$profiles.handlers || (package$profiles.handlers = {});
+  package$handlers.Handler = Handler;
+  package$handlers.MultiCoursesHandler = MultiCoursesHandler;
+  var package$io = package$profiles.io || (package$profiles.io = {});
+  Object.defineProperty(package$io, 'ProfilesIO', {
+    get: ProfilesIO_getInstance
   });
   var package$security = package$vplan3.security || (package$vplan3.security = {});
   Object.defineProperty(package$security, 'LoginManager', {
@@ -965,7 +1511,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   package$navigation.Option = Option;
   var package$pages = package$ui.pages || (package$ui.pages = {});
   package$pages.Page = Page;
+  package$pages.PageDaymsgs = PageDaymsgs;
   package$pages.PageLogin = PageLogin;
+  package$pages.PageProfiles = PageProfiles;
   package$pages.PageVertretungsplan = PageVertretungsplan;
   VERTRETUNGSPLAN_MIRROR_URL = 'http://information.lvideos.de/lvideos.vplan3/mirror/fetch_cors.php?' + 'url=http%3A%2F%2Fvertretungsplan.herderschule-lueneburg.de%2FKlassenplan.htm';
   VERTRETUNGSPLAN_LOCAL_URL = 'plan.html';
