@@ -84,25 +84,25 @@
         <div class="ly-template-vcard w3-col s4 m3 l2" hidden>
             <div class="w3-container vp-vpcard vp-vpbase">
                 <p>
-                    <span class="vp-class">Class</span> <span class="vp-subject">Su</span><br />
-                    <span>Std: <span class="vp-hours">Hours</span></span>
+                    <span class="ly-class">Class</span> <span class="ly-subject">Su</span><br />
+                    <span>Std: <span class="ly-hours">Hours</span></span>
                 </p>
             </div>
         </div>
 
         <div class="ly-template-section w3-col s12" hidden>
             <div class="w3-container vp-vpcard vp-vpbase vp-section">
-                <p class="vp-section-title w3-center"></p>
+                <p class="ly-section-title w3-center"></p>
             </div>
         </div>
 
         <div class="ly-template-lastupdated w3-col s12" hidden>
             <div class="w3-container vp-vpbase w3-white">
-                <p>Stand: <span class="vp-lastupdated-date"></span></p>
+                <p>Stand: <span class="ly-lastupdated-date"></span></p>
             </div>
         </div>
 
-        <div class="vp-main-container w3-row">
+        <div class="ly-content vp-main-container w3-row">
 
         </div>
     </div>
@@ -113,23 +113,23 @@
     <div class="ly-page-daymsgs" hidden>
         <div class="ly-template-daymsgscard w3-col s12" hidden>
             <div class="w3-container vp-vpcard vp-vpbase w3-white">
-                <p class="vp-daymsgs-content"></p>
+                <p class="ly-daymsgs-content"></p>
             </div>
         </div>
 
         <div class="ly-template-section w3-col s12" hidden>
             <div class="w3-container vp-vpcard vp-vpbase vp-section">
-                <p class="vp-section-title w3-center"></p>
+                <p class="ly-section-title w3-center"></p>
             </div>
         </div>
 
         <div class="ly-template-lastupdated w3-col s12" hidden>
             <div class="w3-container vp-vpbase w3-white">
-                <p>Stand: <span class="vp-lastupdated-date"></span></p>
+                <p>Stand: <span class="ly-lastupdated-date"></span></p>
             </div>
         </div>
 
-        <div class="vp-main-container w3-row">
+        <div class="ly-content vp-main-container w3-row">
 
         </div>
     </div>
@@ -137,24 +137,80 @@
     <!----------------------------------------------------------------------------------------------------------------->
     <!-- PROFILES PAGE -->
     <!----------------------------------------------------------------------------------------------------------------->
-    <div class="ly-page-profiles">
+    <div class="ly-page-profiles" hidden>
         <ul hidden>
-            <li class="ly-template-profile w3-bar" hidden>
-                <svg fill="rgba(0,0,0,0)" class="w3-bar-item" width="49px" height="49px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 0h24v24H0z" fill="none"/>
-                    <path class="vp-icon-fill" d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z" />
-                </svg>
-                <span class="vp-profile-delete w3-bar-item w3-button w3-white w3-xlarge w3-right">×</span>
-                <div class="w3-bar-item">
-                    <span class="vp-name w3-large">Lennart</span>
-                    <br />
-                    <span class="vp-clazz">Klasse 12</span>
+            <li class="ly-template-addprofile w3-bar w3-button" hidden>
+                <span class="w3-bar-item w3-xlarge">+</span>
+                <div class="w3-bar-item" style="padding-top: 13px; padding-bottom: 13px;">
+                    <span class="w3-large w3-center">Person hinzufügen</span>
                 </div>
+            </li>
+
+            <li class="ly-template-profile w3-bar" hidden>
+                <div class="ly-profile-click w3-button w3-left-align" style="padding:0px;">
+                    <svg fill="rgba(0,0,0,0)" class="w3-bar-item" width="65px" height="65px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path class="vp-icon-fill" d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z" />
+                    </svg>
+                    <div class="w3-bar-item">
+                        <span class="ly-name w3-large"></span>
+                        <br />
+                        <span>Klasse <span class="ly-clazz"></span></span>
+                    </div>
+                </div>
+                <span class="ly-profile-delete w3-bar-item w3-button w3-white w3-xlarge w3-right" style="padding-top: 13px; padding-bottom: 13px;">×</span>
             </li>
         </ul>
 
-        <ul class="vp-list-container w3-ul">
+        <ul class="ly-content w3-ul">
 
+        </ul>
+    </div>
+
+    <!----------------------------------------------------------------------------------------------------------------->
+    <!-- EDIT PROFILE PAGE -->
+    <!----------------------------------------------------------------------------------------------------------------->
+    <div class="ly-page-editprofile" hidden>
+        <ul hidden>
+            <li class="ly-template-multicourse w3-bar" hidden>
+                <p>
+                    <label class="ly-coursename"></label>
+                    <input class="ly-courses w3-input" name="courses" type="text" />
+                </p>
+            </li>
+        </ul>
+
+        <div class="ly-profile-data w3-container">
+            <h2>Person bearbeiten</h2>
+            <p>
+                <label>Name</label>
+                <input class="ly-name w3-input" name="name" type="text" />
+            </p>
+            <p>
+                <label>Klasse oder Jahrgang (Oberstufe)</label>
+                <input class="ly-clazz w3-input" name="clazz" type="text" />
+            </p>
+        </div>
+        <div class="vp-divider"></div>
+        <ul class="vp-list-container w3-ul">
+            <li class="w3-bar">
+                <p>
+                    <label>Oberstufenkurse</label>
+                    <input class="w3-input" name="oberstufe" type="text" />
+                </p>
+            </li>
+            <li class="w3-bar">
+                <p>
+                    <label>Oberstufenkurse</label>
+                    <input class="w3-input" name="oberstufe" type="text" />
+                </p>
+            </li>
+        </ul>
+        <ul class="w3-ul">
+            <li class="w3-li">
+                <div class="w3-button w3-grey ly-btn-cancel">Abbrechen</div>
+                <div class="w3-button w3-orange ly-btn-save">Speichern</div>
+            </li>
         </ul>
     </div>
 

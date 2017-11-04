@@ -22,6 +22,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   var until = Kotlin.kotlin.ranges.until_dqglrj$;
   var Enum = Kotlin.kotlin.Enum;
   var Regex = Kotlin.kotlin.text.Regex_61zpoe$;
+  var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
@@ -595,7 +596,11 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       if (!(this$DownloadManager.authorization.length === 0)) {
         formData.append('authorization', LoginManager_getInstance().get());
       }
-      window.fetch(this$DownloadManager.url).then(DownloadManager$get$lambda$lambda(this$DownloadManager, resolve)).catch(reject);
+      var _url = this$DownloadManager.url;
+      if (!(this$DownloadManager.authorization.length === 0) && !Kotlin.equals(this$DownloadManager.url, VERTRETUNGSPLAN_LOCAL_URL)) {
+        _url = this$DownloadManager.url + '&authorization=' + encodeURIComponent(this$DownloadManager.authorization);
+      }
+      window.fetch(_url).then(DownloadManager$get$lambda$lambda(this$DownloadManager, resolve)).catch(reject);
       return Unit;
     };
   }
@@ -784,11 +789,11 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.useFilter = false;
     this.useGreyOut = false;
     this.handlers_0.add_11rb$(new MultiCoursesHandler('oberstufe', Regex('.{3,}'), new IntRange(11, 13)));
-    var list = ArrayList_init();
-    list.add_11rb$(new Course('oberstufe', 'ch1,ge1'));
-    this.profiles.add_11rb$(new Profile(Kotlin.Long.ZERO, 'Lennart', new VPSchoolclass('11'), list, 'ffe082'));
-    this.profiles.add_11rb$(new Profile(Kotlin.Long.ONE, 'Test', new VPSchoolclass('10F2'), ArrayList_init()));
+    this.profiles.addAll_brywnq$(ProfilesIO_getInstance().loadProfiles());
   }
+  ProfilesManager.prototype.commitCurrentState = function () {
+    ProfilesIO_getInstance().saveProfiles_1eesz$(this.profiles);
+  };
   ProfilesManager.prototype.filterEntry_pnv8wy$ = function (entry) {
     var finalFR = new ExtendedFR();
     if (!this.useFilter) {
@@ -895,17 +900,109 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function ProfilesIO() {
     ProfilesIO_instance = this;
+    this.topLevelRegex_0 = Regex('\\[([^\\]]*)\\]');
+    this.coursesRegex_0 = Regex('\\(([^\\)]*)\\)');
   }
   ProfilesIO.prototype.loadProfiles = function () {
-    var list = ArrayList_init();
-    var content = '#[[uniqueId=0][name=Lennart][clazz=11][courses=(oberstufe=ch1,ge1)][color=ffe082][disabled=false]],#[[uniqueId=1][name=Test][clazz=10F2][courses=][color=FFFFFF][disabled=false]]';
     var tmp$;
-    tmp$ = split(content, ['#']).iterator();
+    var list = ArrayList_init();
+    if ((tmp$ = localStorage['profiles']) != null) {
+      var tmp$_0;
+      tmp$_0 = split(tmp$, ['#']).iterator();
+      while (tmp$_0.hasNext()) {
+        var element = tmp$_0.next();
+        if (!(element.length === 0)) {
+          var $receiver = removeSurrounding(element, '[', ']');
+          var tmp$_1;
+          var uniqueId = {v: Kotlin.Long.ZERO};
+          var name = {v: ''};
+          var clazz = {v: ''};
+          var clazzType = {v: ''};
+          var courses = ArrayList_init();
+          var color = {v: ''};
+          var disabled = {v: false};
+          var tmp$_2;
+          tmp$_2 = this.topLevelRegex_0.findAll_905azu$($receiver).iterator();
+          while (tmp$_2.hasNext()) {
+            var element_0 = tmp$_2.next();
+            var $receiver_0 = removeSurrounding(element_0.value, '[', ']');
+            var tmp$_3;
+            tmp$_3 = substringBefore($receiver_0, '=');
+            if (Kotlin.equals(tmp$_3, 'uniqueId')) {
+              uniqueId.v = toLong(substringAfter($receiver_0, '='));
+            }
+             else if (Kotlin.equals(tmp$_3, 'name')) {
+              name.v = substringAfter($receiver_0, '=');
+            }
+             else if (Kotlin.equals(tmp$_3, 'clazz')) {
+              clazz.v = substringAfter($receiver_0, '=');
+            }
+             else if (Kotlin.equals(tmp$_3, 'clazzType')) {
+              clazzType.v = substringAfter($receiver_0, '=');
+            }
+             else if (Kotlin.equals(tmp$_3, 'courses')) {
+              courses.addAll_brywnq$(this.parseCourses_0(substringAfter($receiver_0, '=')));
+            }
+             else if (Kotlin.equals(tmp$_3, 'color')) {
+              color.v = substringAfter($receiver_0, '=');
+            }
+             else if (Kotlin.equals(tmp$_3, 'disabled')) {
+              disabled.v = this.parseBoolean_0(substringAfter($receiver_0, '='));
+            }
+          }
+          var tmp$_4 = !Kotlin.equals(uniqueId.v, Kotlin.Long.ZERO);
+          if (tmp$_4) {
+            tmp$_4 = !(name.v.length === 0);
+          }
+          var tmp$_5 = tmp$_4;
+          if (tmp$_5) {
+            tmp$_5 = !(clazz.v.length === 0);
+          }
+          var tmp$_6 = tmp$_5;
+          if (tmp$_6) {
+            tmp$_6 = !(clazzType.v.length === 0);
+          }
+          if (tmp$_6) {
+            var vpClass = null;
+            tmp$_1 = clazzType.v;
+            if (Kotlin.equals(tmp$_1, VPSchoolclass$Companion_getInstance().className))
+              vpClass = new VPSchoolclass(clazz.v);
+            else if (Kotlin.equals(tmp$_1, VPOtherclass$Companion_getInstance().className))
+              vpClass = new VPOtherclass(clazz.v);
+            if (vpClass != null) {
+              list.add_11rb$(new Profile(uniqueId.v, name.v, vpClass, courses, color.v, disabled.v));
+            }
+          }
+        }
+      }
+    }
+    println(list);
+    return list;
+  };
+  ProfilesIO.prototype.parseCourses_0 = function (string) {
+    var list = ArrayList_init();
+    var tmp$;
+    tmp$ = this.coursesRegex_0.findAll_905azu$(string).iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      removeSurrounding(element, '[', ']');
+      var $receiver = removeSurrounding(element.value, '(', ')');
+      var internalName = substringBefore($receiver, '=');
+      var data = substringAfter($receiver, '=');
+      list.add_11rb$(new Course(internalName, data));
     }
     return list;
+  };
+  ProfilesIO.prototype.parseBoolean_0 = function (string) {
+    var tmp$, tmp$_0;
+    var tmp$_1;
+    tmp$ = trim(Kotlin.isCharSequence(tmp$_1 = string) ? tmp$_1 : Kotlin.throwCCE()).toString();
+    if (Kotlin.equals(tmp$, 'true'))
+      tmp$_0 = true;
+    else if (Kotlin.equals(tmp$, 'false'))
+      tmp$_0 = false;
+    else
+      tmp$_0 = false;
+    return tmp$_0;
   };
   ProfilesIO.prototype.saveProfiles_1eesz$ = function (profiles) {
     var builder = new StringBuilder();
@@ -913,13 +1010,13 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     tmp$ = profiles.iterator();
     while (tmp$.hasNext()) {
       var element = tmp$.next();
-      builder.append_gw00v9$('#').append_gw00v9$(replace(this.serializeProfile_0(element), '#', '')).append_gw00v9$(',');
+      builder.append_gw00v9$('#').append_gw00v9$(replace(this.serializeProfile_0(element), '#', ''));
     }
-    println(removeSuffix(builder, ','));
+    localStorage['profiles'] = removeSuffix(builder, ',').toString();
   };
   ProfilesIO.prototype.serializeProfile_0 = function (profile) {
     var builder = new StringBuilder('[');
-    builder.append_gw00v9$('[uniqueId=' + profile.uniqueId + '][name=' + profile.name + '][clazz=' + profile.clazz + ']');
+    builder.append_gw00v9$('[uniqueId=' + profile.uniqueId + '][name=' + profile.name + '][clazz=' + profile.clazz + '][clazzType=' + profile.clazz.className() + ']');
     builder.append_gw00v9$('[courses=' + this.serializeCourses_0(profile.courses) + '][color=' + profile.color + '][disabled=' + profile.disabled + ']');
     builder.append_gw00v9$(']');
     return builder.toString();
@@ -1059,8 +1156,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.pages_0.put_xwzc9p$(this.pageLogin.name, new PageLogin());
     this.pages_0.put_xwzc9p$(this.pageVPlan.name, new PageVertretungsplan());
     this.pages_0.put_xwzc9p$(this.pageDaymsgs.name, new PageDaymsgs());
+    this.pages_0.put_xwzc9p$(this.pageProfiles.name, new PageProfiles());
     if (LoginManager_getInstance().hasCorrectLoginData()) {
-      this.changeTo_u4w5b9$(this.pageVPlan);
+      this.changeTo_u4w5b9$(this.pageProfiles);
     }
      else {
       this.changeTo_u4w5b9$(this.pageLogin);
@@ -1142,16 +1240,16 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
     this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
   }
-  function PageDaymsgs$load$lambda$lambda(closure$mainContainer, this$PageDaymsgs) {
+  function PageDaymsgs$load$lambda$lambda(closure$content, this$PageDaymsgs) {
     return function (it) {
       var tmp$;
       if (it != null) {
-        var closure$mainContainer_0 = closure$mainContainer;
+        var closure$content_0 = closure$content;
         var this$PageDaymsgs_0 = this$PageDaymsgs;
         var tmp$_0;
-        this$PageDaymsgs_0.displayBlock_0(it.today, closure$mainContainer_0);
-        this$PageDaymsgs_0.displayBlock_0(it.tomorrow, closure$mainContainer_0);
-        tmp$ = (tmp$_0 = this$PageDaymsgs_0.createLastUpdated_0(it.lastUpdated, this$PageDaymsgs_0.templateLastUpdated_0)) != null ? closure$mainContainer_0.appendChild(tmp$_0) : null;
+        this$PageDaymsgs_0.displayBlock_0(it.today, closure$content_0);
+        this$PageDaymsgs_0.displayBlock_0(it.tomorrow, closure$content_0);
+        tmp$ = (tmp$_0 = this$PageDaymsgs_0.createLastUpdated_0(it.lastUpdated, this$PageDaymsgs_0.templateLastUpdated_0)) != null ? closure$content_0.appendChild(tmp$_0) : null;
       }
        else
         tmp$ = null;
@@ -1159,15 +1257,15 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     };
   }
   PageDaymsgs.prototype.load = function () {
-    var mainContainer = this.page.getElementsByClassName('vp-main-container')[0];
-    if (mainContainer != null) {
+    var content = this.page.getElementsByClassName('ly-content')[0];
+    if (content != null) {
       var tmp$;
-      while (mainContainer.firstChild !== null) {
-        if ((tmp$ = mainContainer.firstChild) != null) {
-          mainContainer.removeChild(tmp$);
+      while (content.firstChild !== null) {
+        if ((tmp$ = content.firstChild) != null) {
+          content.removeChild(tmp$);
         }
       }
-      OnlineplanManager_getInstance().get().then(PageDaymsgs$load$lambda$lambda(mainContainer, this));
+      OnlineplanManager_getInstance().get().then(PageDaymsgs$load$lambda$lambda(content, this));
     }
   };
   PageDaymsgs.prototype.reload = function () {
@@ -1195,7 +1293,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     if (Kotlin.isType(daymsgsCard, Element)) {
       daymsgsCard.removeAttribute('hidden');
       removeClass(daymsgsCard, ['ly-template-vcard']);
-      (tmp$ = daymsgsCard.getElementsByClassName('vp-daymsgs-content')[0]) != null ? (tmp$.innerHTML = message.message) : null;
+      (tmp$ = daymsgsCard.getElementsByClassName('ly-daymsgs-content')[0]) != null ? (tmp$.innerHTML = message.message) : null;
       return daymsgsCard;
     }
     return null;
@@ -1206,7 +1304,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-section']);
-      (tmp$ = section.getElementsByClassName('vp-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
+      (tmp$ = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
       return section;
     }
     return null;
@@ -1217,7 +1315,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-lastupdated']);
-      (tmp$ = section.getElementsByClassName('vp-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
+      (tmp$ = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
       return section;
     }
     return null;
@@ -1290,20 +1388,74 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageProfiles() {
     Page.call(this, 'ly-page-profiles');
+    this.templateAddProfile_0 = document.getElementsByClassName('ly-template-addprofile')[0];
     this.templateProfile_0 = document.getElementsByClassName('ly-template-profile')[0];
   }
   PageProfiles.prototype.load = function () {
-    var listContainer = this.page.getElementsByClassName('vp-list-container')[0];
-    if (listContainer != null) {
-      var tmp$;
-      while (listContainer.firstChild !== null) {
-        if ((tmp$ = listContainer.firstChild) != null) {
-          listContainer.removeChild(tmp$);
+    var content = this.page.getElementsByClassName('ly-content')[0];
+    if (content != null) {
+      var tmp$, tmp$_0;
+      while (content.firstChild !== null) {
+        if ((tmp$ = content.firstChild) != null) {
+          content.removeChild(tmp$);
+        }
+      }
+      if ((tmp$_0 = this.createAddProfileRow_0()) != null) {
+        content.appendChild(tmp$_0);
+      }
+      var tmp$_1;
+      tmp$_1 = ProfilesManager_getInstance().profiles.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        var tmp$_2;
+        if ((tmp$_2 = this.createProfileRow_0(element)) != null) {
+          content.appendChild(tmp$_2);
         }
       }
     }
   };
   PageProfiles.prototype.reload = function () {
+  };
+  function PageProfiles$createAddProfileRow$lambda(it) {
+    println('Creating new profile...');
+    return Unit;
+  }
+  PageProfiles.prototype.createAddProfileRow_0 = function () {
+    var tmp$;
+    var row = (tmp$ = this.templateAddProfile_0) != null ? tmp$.cloneNode(true) : null;
+    if (Kotlin.isType(row, Element)) {
+      row.removeAttribute('hidden');
+      removeClass(row, ['ly-template-addprofile']);
+      row.addEventListener('click', PageProfiles$createAddProfileRow$lambda);
+      return row;
+    }
+    return null;
+  };
+  function PageProfiles$createProfileRow$lambda(closure$profile) {
+    return function (it) {
+      println('click profile: ' + closure$profile);
+      return Unit;
+    };
+  }
+  function PageProfiles$createProfileRow$lambda_0(closure$profile) {
+    return function (it) {
+      println('delete profile: ' + closure$profile);
+      return Unit;
+    };
+  }
+  PageProfiles.prototype.createProfileRow_0 = function (profile) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var row = (tmp$ = this.templateProfile_0) != null ? tmp$.cloneNode(true) : null;
+    if (Kotlin.isType(row, Element)) {
+      row.removeAttribute('hidden');
+      removeClass(row, ['ly-template-profile']);
+      (tmp$_0 = row.getElementsByClassName('ly-profile-click')[0]) != null ? (tmp$_0.addEventListener('click', PageProfiles$createProfileRow$lambda(profile)), Unit) : null;
+      (tmp$_1 = row.getElementsByClassName('ly-profile-delete')[0]) != null ? (tmp$_1.addEventListener('click', PageProfiles$createProfileRow$lambda_0(profile)), Unit) : null;
+      (tmp$_2 = row.getElementsByClassName('ly-name')[0]) != null ? (tmp$_2.innerHTML = profile.name) : null;
+      (tmp$_3 = row.getElementsByClassName('ly-clazz')[0]) != null ? (tmp$_3.innerHTML = profile.clazz.fullName()) : null;
+      return row;
+    }
+    return null;
   };
   PageProfiles.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
@@ -1316,16 +1468,16 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
     this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
   }
-  function PageVertretungsplan$load$lambda$lambda(closure$mainContainer, this$PageVertretungsplan) {
+  function PageVertretungsplan$load$lambda$lambda(closure$content, this$PageVertretungsplan) {
     return function (it) {
       var tmp$;
       if (it != null) {
-        var closure$mainContainer_0 = closure$mainContainer;
+        var closure$content_0 = closure$content;
         var this$PageVertretungsplan_0 = this$PageVertretungsplan;
         var tmp$_0;
-        this$PageVertretungsplan_0.displayBlock_0(it.today, closure$mainContainer_0);
-        this$PageVertretungsplan_0.displayBlock_0(it.tomorrow, closure$mainContainer_0);
-        tmp$ = (tmp$_0 = this$PageVertretungsplan_0.createLastUpdated_0(it.lastUpdated, this$PageVertretungsplan_0.templateLastUpdated_0)) != null ? closure$mainContainer_0.appendChild(tmp$_0) : null;
+        this$PageVertretungsplan_0.displayBlock_0(it.today, closure$content_0);
+        this$PageVertretungsplan_0.displayBlock_0(it.tomorrow, closure$content_0);
+        tmp$ = (tmp$_0 = this$PageVertretungsplan_0.createLastUpdated_0(it.lastUpdated, this$PageVertretungsplan_0.templateLastUpdated_0)) != null ? closure$content_0.appendChild(tmp$_0) : null;
       }
        else
         tmp$ = null;
@@ -1333,15 +1485,15 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     };
   }
   PageVertretungsplan.prototype.load = function () {
-    var mainContainer = this.page.getElementsByClassName('vp-main-container')[0];
-    if (mainContainer != null) {
+    var content = this.page.getElementsByClassName('ly-content')[0];
+    if (content != null) {
       var tmp$;
-      while (mainContainer.firstChild !== null) {
-        if ((tmp$ = mainContainer.firstChild) != null) {
-          mainContainer.removeChild(tmp$);
+      while (content.firstChild !== null) {
+        if ((tmp$ = content.firstChild) != null) {
+          content.removeChild(tmp$);
         }
       }
-      OnlineplanManager_getInstance().get().then(PageVertretungsplan$load$lambda$lambda(mainContainer, this));
+      OnlineplanManager_getInstance().get().then(PageVertretungsplan$load$lambda$lambda(content, this));
     }
   };
   PageVertretungsplan.prototype.reload = function () {
@@ -1389,9 +1541,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
           card.style.backgroundColor = '#' + Kotlin.toString(color);
         }
       }
-      (tmp$ = vpCard.getElementsByClassName('vp-class')[0]) != null ? (tmp$.innerHTML = entry.classesAsString()) : null;
-      (tmp$_0 = vpCard.getElementsByClassName('vp-subject')[0]) != null ? (tmp$_0.innerHTML = entry.subjectDisplayString()) : null;
-      (tmp$_1 = vpCard.getElementsByClassName('vp-hours')[0]) != null ? (tmp$_1.innerHTML = entry.hours) : null;
+      (tmp$ = vpCard.getElementsByClassName('ly-class')[0]) != null ? (tmp$.innerHTML = entry.classesAsString()) : null;
+      (tmp$_0 = vpCard.getElementsByClassName('ly-subject')[0]) != null ? (tmp$_0.innerHTML = entry.subjectDisplayString()) : null;
+      (tmp$_1 = vpCard.getElementsByClassName('ly-hours')[0]) != null ? (tmp$_1.innerHTML = entry.hours) : null;
       if (entry.cancelled) {
         var subDiv = vpCard.getElementsByTagName('div')[0];
         if (Kotlin.isType(subDiv, HTMLDivElement)) {
@@ -1408,7 +1560,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-section']);
-      (tmp$ = section.getElementsByClassName('vp-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
+      (tmp$ = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
       return section;
     }
     return null;
@@ -1419,7 +1571,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-lastupdated']);
-      (tmp$ = section.getElementsByClassName('vp-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
+      (tmp$ = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
       return section;
     }
     return null;
