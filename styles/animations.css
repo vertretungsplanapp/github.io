@@ -1,0 +1,24 @@
+@keyframes kf-heightout {
+	from {
+		max-height: 1000px;
+	}
+	to {
+		max-height: 0px;
+	}
+}
+
+.anim-heightout {
+	background-color: red;
+	animation-name: kf-heightout;
+	animation-duration: 2s;
+	animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.test123 {
+	max-height: 500px;
+	transition: max-height 2s ease-out;
+}
+
+.anim2-height {
+	max-height: 0px;
+}

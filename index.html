@@ -7,6 +7,7 @@
     <title>Vertretungsplan 3.0</title>
     <link rel="stylesheet" type="text/css" href="styles/w3.css" />
     <link rel="stylesheet" type="text/css" href="styles/vplan3.css" />
+    <link rel="stylesheet" type="text/css" href="styles/animations.css" />
 
     <!-- Google/Android manifest -->
     <link rel="manifest" href="manifest.json" />
@@ -102,6 +103,12 @@
             </div>
         </div>
 
+        <div class="ly-template-noentries w3-col s12" hidden>
+            <div class="w3-container vp-vpbase w3-white">
+                <p>Keine Vertretungen</p>
+            </div>
+        </div>
+
         <div class="ly-content vp-main-container w3-row">
 
         </div>
@@ -126,6 +133,12 @@
         <div class="ly-template-lastupdated w3-col s12" hidden>
             <div class="w3-container vp-vpbase w3-white">
                 <p>Stand: <span class="ly-lastupdated-date"></span></p>
+            </div>
+        </div>
+
+        <div class="ly-template-nodaymsgs w3-col s12" hidden>
+            <div class="w3-container vp-vpbase w3-white">
+                <p>Keine Nachrichten</p>
             </div>
         </div>
 
@@ -172,15 +185,15 @@
     <!----------------------------------------------------------------------------------------------------------------->
     <div class="ly-page-editprofile" hidden>
         <ul hidden>
-            <li class="ly-template-multicourse w3-bar" hidden>
+            <li class="ly-template-multicourses w3-bar" hidden>
                 <p>
-                    <label class="ly-coursename"></label>
-                    <input class="ly-courses w3-input" name="courses" type="text" />
+                    <label class="ly-displayname"></label>
+                    <input class="ly-courses w3-input" name="courses" type="text" placeholder="Separiere die Kurse mit Leerzeichen oder Kommas" />
                 </p>
             </li>
         </ul>
 
-        <div class="ly-profile-data w3-container">
+        <div class="w3-container">
             <h2>Person bearbeiten</h2>
             <p>
                 <label>Name</label>
@@ -192,19 +205,8 @@
             </p>
         </div>
         <div class="vp-divider"></div>
-        <ul class="vp-list-container w3-ul">
-            <li class="w3-bar">
-                <p>
-                    <label>Oberstufenkurse</label>
-                    <input class="w3-input" name="oberstufe" type="text" />
-                </p>
-            </li>
-            <li class="w3-bar">
-                <p>
-                    <label>Oberstufenkurse</label>
-                    <input class="w3-input" name="oberstufe" type="text" />
-                </p>
-            </li>
+        <ul class="ly-content w3-ul">
+
         </ul>
         <ul class="w3-ul">
             <li class="w3-li">

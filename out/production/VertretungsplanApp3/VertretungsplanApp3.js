@@ -16,16 +16,18 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   var substringAfterLast = Kotlin.kotlin.text.substringAfterLast_j4ogox$;
   var StringBuilder = Kotlin.kotlin.text.StringBuilder;
   var removeSuffix = Kotlin.kotlin.text.removeSuffix_b6aurr$;
+  var Regex = Kotlin.kotlin.text.Regex_61zpoe$;
   var IntRange = Kotlin.kotlin.ranges.IntRange;
   var substring = Kotlin.kotlin.text.substring_fc3b62$;
   var toInt = Kotlin.kotlin.text.toInt_pdl1vz$;
-  var until = Kotlin.kotlin.ranges.until_dqglrj$;
-  var Enum = Kotlin.kotlin.Enum;
-  var Regex = Kotlin.kotlin.text.Regex_61zpoe$;
-  var toLong = Kotlin.kotlin.text.toLong_pdl1vz$;
   var println = Kotlin.kotlin.io.println_s8jyv4$;
+  var Enum = Kotlin.kotlin.Enum;
+  var toDouble = Kotlin.kotlin.text.toDouble_pdl1vz$;
   var HashMap_init = Kotlin.kotlin.collections.HashMap_init_q3lmfv$;
   var removeClass = Kotlin.kotlin.dom.removeClass_hhb33f$;
+  var RegexOption = Kotlin.kotlin.text.RegexOption;
+  var Regex_0 = Kotlin.kotlin.text.Regex_sb3q2$;
+  var addClass = Kotlin.kotlin.dom.addClass_hhb33f$;
   OnlineplanManager.prototype = Object.create(DownloadManager.prototype);
   OnlineplanManager.prototype.constructor = OnlineplanManager;
   FilterResult.prototype = Object.create(Enum.prototype);
@@ -34,6 +36,8 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   MultiCoursesHandler.prototype.constructor = MultiCoursesHandler;
   PageDaymsgs.prototype = Object.create(Page.prototype);
   PageDaymsgs.prototype.constructor = PageDaymsgs;
+  PageEditProfile.prototype = Object.create(Page.prototype);
+  PageEditProfile.prototype.constructor = PageEditProfile;
   PageLogin.prototype = Object.create(Page.prototype);
   PageLogin.prototype.constructor = PageLogin;
   PageProfiles.prototype = Object.create(Page.prototype);
@@ -461,16 +465,28 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     VPSchoolclass$Companion_getInstance();
     this.year_tg0m8x$_0 = 0;
     this.extension_38xtuh$_0 = '';
+    var tmp$;
     if (startsWith(toParse, '11') || startsWith(toParse, '12') || startsWith(toParse, '13')) {
       this.year = toInt(substring(toParse, new IntRange(0, 1)));
     }
      else {
-      this.year = toInt(substring(toParse, until(0, 1)));
-      this.extension = toParse.substring(1);
+      var tmp$_0;
+      if ((tmp$ = VPSchoolclass$Companion_getInstance().numberRegex_0.find_905azu$(toParse)) != null) {
+        this.year = toInt(tmp$.value);
+        var startIndex = tmp$.value.length;
+        this.extension = toParse.substring(startIndex);
+        tmp$_0 = Unit;
+      }
+       else
+        tmp$_0 = null;
+      if (tmp$_0 == null) {
+        println("Error: Could not parse '" + toParse + "' as VPSchoolclass");
+      }
     }
   }
   function VPSchoolclass$Companion() {
     VPSchoolclass$Companion_instance = this;
+    this.numberRegex_0 = Regex('\\d+');
     this.className = 'VPSchoolclass';
   }
   VPSchoolclass$Companion.$metadata$ = {
@@ -740,6 +756,17 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.color = color;
     this.disabled = disabled;
   }
+  Profile.prototype.findCourseByName_61zpoe$ = function (internalName) {
+    var tmp$;
+    tmp$ = this.courses.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (Kotlin.equals(element.internalName, internalName)) {
+        return element;
+      }
+    }
+    return null;
+  };
   Profile.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: 'Profile',
@@ -763,7 +790,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   Profile.prototype.component6 = function () {
     return this.disabled;
   };
-  Profile.prototype.copy_ocn07t$ = function (uniqueId, name, clazz, courses, color, disabled) {
+  Profile.prototype.copy_l3dg5g$ = function (uniqueId, name, clazz, courses, color, disabled) {
     return new Profile(uniqueId === void 0 ? this.uniqueId : uniqueId, name === void 0 ? this.name : name, clazz === void 0 ? this.clazz : clazz, courses === void 0 ? this.courses : courses, color === void 0 ? this.color : color, disabled === void 0 ? this.disabled : disabled);
   };
   Profile.prototype.toString = function () {
@@ -782,15 +809,89 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   Profile.prototype.equals = function (other) {
     return this === other || (other !== null && (typeof other === 'object' && (Object.getPrototypeOf(this) === Object.getPrototypeOf(other) && (Kotlin.equals(this.uniqueId, other.uniqueId) && Kotlin.equals(this.name, other.name) && Kotlin.equals(this.clazz, other.clazz) && Kotlin.equals(this.courses, other.courses) && Kotlin.equals(this.color, other.color) && Kotlin.equals(this.disabled, other.disabled)))));
   };
+  var sortWith = Kotlin.kotlin.collections.sortWith_nqfjgj$;
+  var wrapFunction = Kotlin.wrapFunction;
+  var compareBy$lambda = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(a), selector(b));
+      };
+    };
+  });
+  var Comparator = Kotlin.kotlin.Comparator;
+  function Comparator$ObjectLiteral(closure$comparison) {
+    this.closure$comparison = closure$comparison;
+  }
+  Comparator$ObjectLiteral.prototype.compare = function (a, b) {
+    return this.closure$comparison(a, b);
+  };
+  Comparator$ObjectLiteral.$metadata$ = {kind: Kotlin.Kind.CLASS, interfaces: [Comparator]};
   function ProfilesManager() {
     ProfilesManager_instance = this;
     this.profiles = ArrayList_init();
-    this.handlers_0 = ArrayList_init();
+    this.handlers = ArrayList_init();
     this.useFilter = false;
     this.useGreyOut = false;
-    this.handlers_0.add_11rb$(new MultiCoursesHandler('oberstufe', Regex('.{3,}'), new IntRange(11, 13)));
-    this.profiles.addAll_brywnq$(ProfilesIO_getInstance().loadProfiles());
+    this.handlers.add_11rb$(new MultiCoursesHandler('oberstufe', 'Oberstufenkurse', Regex('.{3,}'), new IntRange(11, 13)));
+    this.handlers.add_11rb$(new MultiCoursesHandler('wpu', 'WPU-Kurse', Regex('\\S\\S[w|W]'), new IntRange(8, 10)));
+    var tmp$;
+    tmp$ = ProfilesIO_getInstance().loadProfiles().iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      this.addOrOverwrite_daokzk$(element);
+    }
+    var $receiver = this.profiles;
+    if ($receiver.size > 1) {
+      sortWith($receiver, new Comparator$ObjectLiteral(compareBy$lambda(ProfilesManager_init$lambda)));
+    }
   }
+  function ProfilesManager$addOrOverwrite$lambda(it) {
+    return it.name;
+  }
+  var compareBy$lambda_0 = wrapFunction(function () {
+    var compareValues = Kotlin.kotlin.comparisons.compareValues_s00gnj$;
+    return function (closure$selector) {
+      return function (a, b) {
+        var selector = closure$selector;
+        return compareValues(selector(a), selector(b));
+      };
+    };
+  });
+  function Comparator$ObjectLiteral_0(closure$comparison) {
+    this.closure$comparison = closure$comparison;
+  }
+  Comparator$ObjectLiteral_0.prototype.compare = function (a, b) {
+    return this.closure$comparison(a, b);
+  };
+  Comparator$ObjectLiteral_0.$metadata$ = {kind: Kotlin.Kind.CLASS, interfaces: [Comparator]};
+  ProfilesManager.prototype.addOrOverwrite_daokzk$ = function (profile) {
+    var tmp$;
+    tmp$ = this.profiles.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (element.uniqueId === profile.uniqueId) {
+        this.profiles.remove_11rb$(element);
+      }
+    }
+    this.profiles.add_11rb$(profile);
+    var $receiver = this.profiles;
+    if ($receiver.size > 1) {
+      sortWith($receiver, new Comparator$ObjectLiteral_0(compareBy$lambda_0(ProfilesManager$addOrOverwrite$lambda)));
+    }
+  };
+  ProfilesManager.prototype.findProfileById_14dthe$ = function (uniqueId) {
+    var tmp$;
+    tmp$ = this.profiles.iterator();
+    while (tmp$.hasNext()) {
+      var element = tmp$.next();
+      if (element.uniqueId === uniqueId) {
+        return element;
+      }
+    }
+    return null;
+  };
   ProfilesManager.prototype.commitCurrentState = function () {
     ProfilesIO_getInstance().saveProfiles_1eesz$(this.profiles);
   };
@@ -821,7 +922,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
               var element_1 = tmp$_1.next();
               var course = element_1;
               var tmp$_2;
-              tmp$_2 = this.handlers_0.iterator();
+              tmp$_2 = this.handlers.iterator();
               while (tmp$_2.hasNext()) {
                 var element_2 = tmp$_2.next();
                 if (element_2.worksWith_sv3gk2$(course.internalName, profile)) {
@@ -845,6 +946,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     }
     return finalFR;
   };
+  function ProfilesManager_init$lambda(it) {
+    return it.name;
+  }
   ProfilesManager.$metadata$ = {
     kind: Kotlin.Kind.OBJECT,
     simpleName: 'ProfilesManager',
@@ -857,8 +961,10 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     }
     return ProfilesManager_instance;
   }
-  function Handler(courseInternalName, years) {
+  function Handler(type, courseInternalName, displayName, years) {
+    this.type = type;
     this.courseInternalName = courseInternalName;
+    this.displayName = displayName;
     this.years = years;
   }
   Handler.prototype.worksForName_61zpoe$ = function (internalName) {
@@ -870,18 +976,38 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   Handler.prototype.worksWithProfile_daokzk$ = function (profile) {
     var clazz = profile.clazz;
     if (Kotlin.isType(clazz, VPSchoolclass)) {
-      return this.years.contains_mef7kx$(clazz.year);
+      return this.worksWithVPSchoolclass_fcy028$(clazz);
     }
     return false;
+  };
+  Handler.prototype.worksWithVPSchoolclass_fcy028$ = function (clazz) {
+    return this.years.contains_mef7kx$(clazz.year);
   };
   Handler.$metadata$ = {
     kind: Kotlin.Kind.CLASS,
     simpleName: 'Handler',
     interfaces: []
   };
-  function MultiCoursesHandler(internalName, pattern, years) {
-    Handler.call(this, internalName, years);
+  function MultiCoursesHandler(internalName, displayName, pattern, years) {
+    MultiCoursesHandler$Companion_getInstance();
+    Handler.call(this, MultiCoursesHandler$Companion_getInstance().handlerName, internalName, displayName, years);
     this.pattern_0 = pattern;
+  }
+  function MultiCoursesHandler$Companion() {
+    MultiCoursesHandler$Companion_instance = this;
+    this.handlerName = 'multi_courses';
+  }
+  MultiCoursesHandler$Companion.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var MultiCoursesHandler$Companion_instance = null;
+  function MultiCoursesHandler$Companion_getInstance() {
+    if (MultiCoursesHandler$Companion_instance === null) {
+      new MultiCoursesHandler$Companion();
+    }
+    return MultiCoursesHandler$Companion_instance;
   }
   MultiCoursesHandler.prototype.filter_nvegbj$ = function (course, entry, useGreyOut) {
     var result = FilterResult$HIDE_getInstance();
@@ -914,7 +1040,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
         if (!(element.length === 0)) {
           var $receiver = removeSurrounding(element, '[', ']');
           var tmp$_1;
-          var uniqueId = {v: Kotlin.Long.ZERO};
+          var uniqueId = {v: 0.0};
           var name = {v: ''};
           var clazz = {v: ''};
           var clazzType = {v: ''};
@@ -929,7 +1055,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
             var tmp$_3;
             tmp$_3 = substringBefore($receiver_0, '=');
             if (Kotlin.equals(tmp$_3, 'uniqueId')) {
-              uniqueId.v = toLong(substringAfter($receiver_0, '='));
+              uniqueId.v = toDouble(substringAfter($receiver_0, '='));
             }
              else if (Kotlin.equals(tmp$_3, 'name')) {
               name.v = substringAfter($receiver_0, '=');
@@ -950,7 +1076,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
               disabled.v = this.parseBoolean_0(substringAfter($receiver_0, '='));
             }
           }
-          var tmp$_4 = !Kotlin.equals(uniqueId.v, Kotlin.Long.ZERO);
+          var tmp$_4 = uniqueId.v !== 0.0;
           if (tmp$_4) {
             tmp$_4 = !(name.v.length === 0);
           }
@@ -1093,6 +1219,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.pageMyVPlan = new Option('page:vplan', Navigator$pageMyVPlan$lambda);
     this.pageDaymsgs = new Option('page:daymsgs', null);
     this.pageProfiles = new Option('page:profiles', null);
+    this.pageEditProfile = new Option('page:editprofile', null);
     this.pageSettings = new Option('page:settings', null);
     this.tabDashboard_0 = null;
     this.tabVPlan_0 = null;
@@ -1100,7 +1227,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     this.tabDaymsgs_0 = null;
     this.tabProfiles_0 = null;
     this.tabSettings_0 = null;
-    this.pages_0 = HashMap_init();
+    this.pages = HashMap_init();
     this.current_0 = null;
   }
   function Navigator$initialize$lambda(this$Navigator) {
@@ -1140,23 +1267,24 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     };
   }
   Navigator.prototype.initialize_2rdptt$ = function (navbar) {
-    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4;
-    this.tabDashboard_0 = navbar.getElementsByClassName('nv-dashboard')[0];
-    (tmp$ = this.tabDashboard_0) != null ? (tmp$.addEventListener('click', Navigator$initialize$lambda(this)), Unit) : null;
-    this.tabVPlan_0 = navbar.getElementsByClassName('nv-vplan')[0];
-    (tmp$_0 = this.tabVPlan_0) != null ? (tmp$_0.addEventListener('click', Navigator$initialize$lambda_0(this)), Unit) : null;
-    this.tabMyVPlan_0 = navbar.getElementsByClassName('nv-my-vplan')[0];
-    (tmp$_1 = this.tabMyVPlan_0) != null ? (tmp$_1.addEventListener('click', Navigator$initialize$lambda_1(this)), Unit) : null;
-    this.tabDaymsgs_0 = navbar.getElementsByClassName('nv-daymsgs')[0];
-    (tmp$_2 = this.tabDaymsgs_0) != null ? (tmp$_2.addEventListener('click', Navigator$initialize$lambda_2(this)), Unit) : null;
-    this.tabProfiles_0 = navbar.getElementsByClassName('nv-profiles')[0];
-    (tmp$_3 = this.tabProfiles_0) != null ? (tmp$_3.addEventListener('click', Navigator$initialize$lambda_3(this)), Unit) : null;
-    this.tabSettings_0 = navbar.getElementsByClassName('nv-settings')[0];
-    (tmp$_4 = this.tabSettings_0) != null ? (tmp$_4.addEventListener('click', Navigator$initialize$lambda_4(this)), Unit) : null;
-    this.pages_0.put_xwzc9p$(this.pageLogin.name, new PageLogin());
-    this.pages_0.put_xwzc9p$(this.pageVPlan.name, new PageVertretungsplan());
-    this.pages_0.put_xwzc9p$(this.pageDaymsgs.name, new PageDaymsgs());
-    this.pages_0.put_xwzc9p$(this.pageProfiles.name, new PageProfiles());
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3, tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8, tmp$_9, tmp$_10;
+    this.tabDashboard_0 = Kotlin.isType(tmp$ = navbar.getElementsByClassName('nv-dashboard')[0], HTMLElement) ? tmp$ : null;
+    (tmp$_0 = this.tabDashboard_0) != null ? (tmp$_0.onclick = Navigator$initialize$lambda(this)) : null;
+    this.tabVPlan_0 = Kotlin.isType(tmp$_1 = navbar.getElementsByClassName('nv-vplan')[0], HTMLElement) ? tmp$_1 : null;
+    (tmp$_2 = this.tabVPlan_0) != null ? (tmp$_2.onclick = Navigator$initialize$lambda_0(this)) : null;
+    this.tabMyVPlan_0 = Kotlin.isType(tmp$_3 = navbar.getElementsByClassName('nv-my-vplan')[0], HTMLElement) ? tmp$_3 : null;
+    (tmp$_4 = this.tabMyVPlan_0) != null ? (tmp$_4.onclick = Navigator$initialize$lambda_1(this)) : null;
+    this.tabDaymsgs_0 = Kotlin.isType(tmp$_5 = navbar.getElementsByClassName('nv-daymsgs')[0], HTMLElement) ? tmp$_5 : null;
+    (tmp$_6 = this.tabDaymsgs_0) != null ? (tmp$_6.onclick = Navigator$initialize$lambda_2(this)) : null;
+    this.tabProfiles_0 = Kotlin.isType(tmp$_7 = navbar.getElementsByClassName('nv-profiles')[0], HTMLElement) ? tmp$_7 : null;
+    (tmp$_8 = this.tabProfiles_0) != null ? (tmp$_8.onclick = Navigator$initialize$lambda_3(this)) : null;
+    this.tabSettings_0 = Kotlin.isType(tmp$_9 = navbar.getElementsByClassName('nv-settings')[0], HTMLElement) ? tmp$_9 : null;
+    (tmp$_10 = this.tabSettings_0) != null ? (tmp$_10.onclick = Navigator$initialize$lambda_4(this)) : null;
+    this.pages.put_xwzc9p$(this.pageLogin.name, new PageLogin());
+    this.pages.put_xwzc9p$(this.pageVPlan.name, new PageVertretungsplan());
+    this.pages.put_xwzc9p$(this.pageDaymsgs.name, new PageDaymsgs());
+    this.pages.put_xwzc9p$(this.pageProfiles.name, new PageProfiles());
+    this.pages.put_xwzc9p$(this.pageEditProfile.name, new PageEditProfile());
     if (LoginManager_getInstance().hasCorrectLoginData()) {
       this.changeTo_u4w5b9$(this.pageProfiles);
     }
@@ -1179,14 +1307,14 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       var tmp$_2, tmp$_3;
       if (Kotlin.equals(tmp$_0.name, next.v.name)) {
         (tmp$_2 = next.v.runBefore) != null ? tmp$_2() : null;
-        (tmp$_3 = this.pages_0.get_11rb$(tmp$_0.name)) != null ? (tmp$_3.reload(), Unit) : null;
+        (tmp$_3 = this.pages.get_11rb$(tmp$_0.name)) != null ? (tmp$_3.reload(), Unit) : null;
         this.current_0 = next.v;
         return;
       }
     }
-    if ((tmp$_1 = this.pages_0.get_11rb$(next.v.name)) != null) {
+    if ((tmp$_1 = this.pages.get_11rb$(next.v.name)) != null) {
       var tmp$_4, tmp$_5, tmp$_6, tmp$_7, tmp$_8;
-      tmp$_5 = this.pages_0;
+      tmp$_5 = this.pages;
       var key = (tmp$_4 = this.current_0) != null ? tmp$_4.name : null;
       var tmp$_9;
       (tmp$_7 = (tmp$_6 = (Kotlin.isType(tmp$_9 = tmp$_5, Map) ? tmp$_9 : Kotlin.throwCCE()).get_11rb$(key)) != null ? tmp$_6.page : null) != null ? (tmp$_7.setAttribute('hidden', 'true'), Unit) : null;
@@ -1236,9 +1364,11 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageDaymsgs() {
     Page.call(this, 'ly-page-daymsgs');
-    this.templateDaymsgsCard_0 = this.page.getElementsByClassName('ly-template-daymsgscard')[0];
-    this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
-    this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    this.templateDaymsgsCard_0 = Kotlin.isType(tmp$ = this.page.getElementsByClassName('ly-template-daymsgscard')[0], HTMLElement) ? tmp$ : null;
+    this.templateSection_0 = Kotlin.isType(tmp$_0 = this.page.getElementsByClassName('ly-template-section')[0], HTMLElement) ? tmp$_0 : null;
+    this.templateLastUpdated_0 = Kotlin.isType(tmp$_1 = this.page.getElementsByClassName('ly-template-lastupdated')[0], HTMLElement) ? tmp$_1 : null;
+    this.templateNoMessages_0 = Kotlin.isType(tmp$_2 = this.page.getElementsByClassName('ly-template-nodaymsgs')[0], HTMLElement) ? tmp$_2 : null;
   }
   function PageDaymsgs$load$lambda$lambda(closure$content, this$PageDaymsgs) {
     return function (it) {
@@ -1249,7 +1379,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
         var tmp$_0;
         this$PageDaymsgs_0.displayBlock_0(it.today, closure$content_0);
         this$PageDaymsgs_0.displayBlock_0(it.tomorrow, closure$content_0);
-        tmp$ = (tmp$_0 = this$PageDaymsgs_0.createLastUpdated_0(it.lastUpdated, this$PageDaymsgs_0.templateLastUpdated_0)) != null ? closure$content_0.appendChild(tmp$_0) : null;
+        tmp$ = (tmp$_0 = this$PageDaymsgs_0.createLastUpdated_0(it.lastUpdated)) != null ? closure$content_0.appendChild(tmp$_0) : null;
       }
        else
         tmp$ = null;
@@ -1272,50 +1402,65 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   PageDaymsgs.prototype.displayBlock_0 = function (block, mainContainer) {
     if (block != null) {
-      var tmp$;
-      if ((tmp$ = this.createSection_0(block.day, this.templateSection_0)) != null) {
+      var tmp$, tmp$_0;
+      if ((tmp$ = this.createSection_0(block.day)) != null) {
         mainContainer.appendChild(tmp$);
       }
-      var tmp$_0;
-      tmp$_0 = block.messages.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        var tmp$_1;
-        if ((tmp$_1 = this.createDaymsgsCard_0(element, this.templateDaymsgsCard_0)) != null) {
-          mainContainer.appendChild(tmp$_1);
+      var tmp$_1;
+      tmp$_1 = block.messages.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        var tmp$_2;
+        if ((tmp$_2 = this.createDaymsgsCard_0(element)) != null) {
+          mainContainer.appendChild(tmp$_2);
+        }
+      }
+      if (block.messages.isEmpty()) {
+        if ((tmp$_0 = this.createNoMessages_0()) != null) {
+          mainContainer.appendChild(tmp$_0);
         }
       }
     }
   };
-  PageDaymsgs.prototype.createDaymsgsCard_0 = function (message, daymsgsCardContent) {
-    var tmp$;
-    var daymsgsCard = daymsgsCardContent != null ? daymsgsCardContent.cloneNode(true) : null;
+  PageDaymsgs.prototype.createDaymsgsCard_0 = function (message) {
+    var tmp$, tmp$_0;
+    var daymsgsCard = (tmp$ = this.templateDaymsgsCard_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(daymsgsCard, Element)) {
       daymsgsCard.removeAttribute('hidden');
       removeClass(daymsgsCard, ['ly-template-vcard']);
-      (tmp$ = daymsgsCard.getElementsByClassName('ly-daymsgs-content')[0]) != null ? (tmp$.innerHTML = message.message) : null;
+      (tmp$_0 = daymsgsCard.getElementsByClassName('ly-daymsgs-content')[0]) != null ? (tmp$_0.innerHTML = message.message) : null;
       return daymsgsCard;
     }
     return null;
   };
-  PageDaymsgs.prototype.createSection_0 = function (day, sectionContent) {
-    var tmp$;
-    var section = sectionContent != null ? sectionContent.cloneNode(true) : null;
+  PageDaymsgs.prototype.createSection_0 = function (day) {
+    var tmp$, tmp$_0;
+    var section = (tmp$ = this.templateSection_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-section']);
-      (tmp$ = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
+      (tmp$_0 = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$_0.innerHTML = day.fullNameAndDate()) : null;
       return section;
     }
     return null;
   };
-  PageDaymsgs.prototype.createLastUpdated_0 = function (lastUpdated, content) {
-    var tmp$;
-    var section = content != null ? content.cloneNode(true) : null;
+  PageDaymsgs.prototype.createLastUpdated_0 = function (lastUpdated) {
+    var tmp$, tmp$_0;
+    var section = (tmp$ = this.templateLastUpdated_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-lastupdated']);
-      (tmp$ = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
+      (tmp$_0 = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$_0.innerHTML = lastUpdated) : null;
+      return section;
+    }
+    return null;
+  };
+  PageDaymsgs.prototype.createNoMessages_0 = function () {
+    var tmp$;
+    var section = (tmp$ = this.templateNoMessages_0) != null ? tmp$.cloneNode(true) : null;
+    if (Kotlin.isType(section, Element)) {
+      section.removeAttribute('hidden');
+      removeClass(section, ['ly-template-nodaymsgs']);
       return section;
     }
     return null;
@@ -1325,16 +1470,198 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     simpleName: 'PageDaymsgs',
     interfaces: [Page]
   };
+  function PageEditProfile() {
+    PageEditProfile$Companion_getInstance();
+    Page.call(this, 'ly-page-editprofile');
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    this.nameField_0 = Kotlin.isType(tmp$ = this.page.getElementsByClassName('ly-name')[0], HTMLInputElement) ? tmp$ : null;
+    this.clazzField_0 = Kotlin.isType(tmp$_0 = this.page.getElementsByClassName('ly-clazz')[0], HTMLInputElement) ? tmp$_0 : null;
+    this.cancelButton_0 = Kotlin.isType(tmp$_1 = this.page.getElementsByClassName('ly-btn-cancel')[0], HTMLElement) ? tmp$_1 : null;
+    this.saveButton_0 = Kotlin.isType(tmp$_2 = this.page.getElementsByClassName('ly-btn-save')[0], HTMLElement) ? tmp$_2 : null;
+    this.templateMultiCourses_0 = this.page.getElementsByClassName('ly-template-multicourses')[0];
+    this.currentProfileId = 0.0;
+  }
+  function PageEditProfile$Companion() {
+    PageEditProfile$Companion_instance = this;
+    this.vpClassRegex_0 = Regex_0('(([5-9](([a-z]{1,2})|([a-z][1-9])|([a-z]/[a-z])))|(10[a-z][1-9]*)|(1[1-3]))', RegexOption.IGNORE_CASE);
+  }
+  PageEditProfile$Companion.$metadata$ = {
+    kind: Kotlin.Kind.OBJECT,
+    simpleName: 'Companion',
+    interfaces: []
+  };
+  var PageEditProfile$Companion_instance = null;
+  function PageEditProfile$Companion_getInstance() {
+    if (PageEditProfile$Companion_instance === null) {
+      new PageEditProfile$Companion();
+    }
+    return PageEditProfile$Companion_instance;
+  }
+  function PageEditProfile$load$lambda$lambda(this$PageEditProfile, closure$content) {
+    return function (it) {
+      this$PageEditProfile.clazzField_0.value = this$PageEditProfile.clazzField_0.value.toUpperCase();
+      this$PageEditProfile.updateCoursesList_0(closure$content);
+      return Unit;
+    };
+  }
+  function PageEditProfile$load$lambda(it) {
+    Navigator_getInstance().changeTo_u4w5b9$(Navigator_getInstance().pageProfiles);
+    return Unit;
+  }
+  function PageEditProfile$load$lambda_0(this$PageEditProfile, closure$content) {
+    return function (it) {
+      var tmp$, tmp$_0, tmp$_1, tmp$_2;
+      var nameInput = (tmp$_0 = (tmp$ = this$PageEditProfile.nameField_0) != null ? tmp$.value : null) != null ? tmp$_0 : '';
+      var clazzInput = (tmp$_2 = (tmp$_1 = this$PageEditProfile.clazzField_0) != null ? tmp$_1.value : null) != null ? tmp$_2 : '';
+      var tmp$_3 = !(nameInput.length === 0);
+      if (tmp$_3) {
+        tmp$_3 = !(clazzInput.length === 0);
+      }
+      if (tmp$_3) {
+        var clazz = PageEditProfile$Companion_getInstance().vpClassRegex_0.matches_6bul2c$(clazzInput) ? new VPSchoolclass(clazzInput) : new VPOtherclass(clazzInput);
+        var courses = ArrayList_init();
+        var $receiver = ProfilesManager_getInstance().handlers;
+        var tmp$_4;
+        tmp$_4 = $receiver.iterator();
+        while (tmp$_4.hasNext()) {
+          var element = tmp$_4.next();
+          var closure$content_0 = closure$content;
+          var handler = element;
+          if (closure$content_0 != null) {
+            var tmp$_5;
+            if ((tmp$_5 = closure$content_0.getElementsByClassName('ly-' + handler.courseInternalName)[0]) != null) {
+              var tmp$_6;
+              if (Kotlin.equals(handler.type, MultiCoursesHandler$Companion_getInstance().handlerName)) {
+                if ((tmp$_6 = tmp$_5.getElementsByClassName('ly-courses')[0]) != null) {
+                  if (Kotlin.isType(tmp$_6, HTMLInputElement)) {
+                    if (!(tmp$_6.value.length === 0)) {
+                      courses.add_11rb$(new Course(handler.courseInternalName, tmp$_6.value));
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        println('adding: ' + this$PageEditProfile.currentProfileId + ' ' + nameInput + ' ' + clazz.fullName() + ' ' + courses);
+        ProfilesManager_getInstance().addOrOverwrite_daokzk$(new Profile(this$PageEditProfile.currentProfileId, nameInput, clazz, courses));
+        ProfilesManager_getInstance().commitCurrentState();
+        Navigator_getInstance().changeTo_u4w5b9$(Navigator_getInstance().pageProfiles);
+      }
+       else {
+        window.alert('Gib einen Namen und eine g\xFCltige Klasse ein!');
+      }
+      return Unit;
+    };
+  }
+  PageEditProfile.prototype.load = function () {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2, tmp$_3;
+    var content = this.page.getElementsByClassName('ly-content')[0];
+    if (Kotlin.isType(content, Element)) {
+      this.removeAllCourses_0(content);
+      var name = {v: ''};
+      var clazz = {v: ''};
+      var profile = {v: null};
+      if ((tmp$ = ProfilesManager_getInstance().findProfileById_14dthe$(this.currentProfileId)) != null) {
+        name.v = tmp$.name;
+        clazz.v = tmp$.clazz.fullName();
+        profile.v = tmp$;
+      }
+      if ((tmp$_0 = this.nameField_0) != null) {
+        tmp$_0.value = name.v;
+      }
+      if ((tmp$_1 = this.clazzField_0) != null) {
+        tmp$_1.value = clazz.v;
+        tmp$_1.oninput = PageEditProfile$load$lambda$lambda(this, content);
+      }
+      this.updateCoursesList_0(content, profile.v);
+    }
+    if (this.currentProfileId === 0.0) {
+      this.currentProfileId = (new Date()).getTime();
+    }
+    (tmp$_2 = this.cancelButton_0) != null ? (tmp$_2.onclick = PageEditProfile$load$lambda) : null;
+    (tmp$_3 = this.saveButton_0) != null ? (tmp$_3.onclick = PageEditProfile$load$lambda_0(this, content)) : null;
+  };
+  PageEditProfile.prototype.reload = function () {
+  };
+  PageEditProfile.prototype.updateCoursesList_0 = function (content, profile) {
+    if (profile === void 0)
+      profile = null;
+    var tmp$, tmp$_0;
+    var clazz = {v: null};
+    if ((tmp$ = this.clazzField_0) != null) {
+      if (PageEditProfile$Companion_getInstance().vpClassRegex_0.matches_6bul2c$(tmp$.value)) {
+        clazz.v = tmp$.value;
+      }
+    }
+    if (profile != null) {
+      clazz.v = profile.clazz.fullName();
+    }
+    var tmp$_1;
+    if ((tmp$_0 = clazz.v) != null) {
+      var cls = tmp$_0;
+      var tmp$_2;
+      tmp$_2 = ProfilesManager_getInstance().handlers.iterator();
+      while (tmp$_2.hasNext()) {
+        var element = tmp$_2.next();
+        var tmp$_3, tmp$_4, tmp$_5, tmp$_6;
+        if (element.worksWithVPSchoolclass_fcy028$(new VPSchoolclass(cls))) {
+          var data = (tmp$_4 = (tmp$_3 = profile != null ? profile.findCourseByName_61zpoe$(element.courseInternalName) : null) != null ? tmp$_3.data : null) != null ? tmp$_4 : '';
+          if (content.getElementsByClassName('ly-' + element.courseInternalName).length === 0) {
+            if (Kotlin.equals(element.type, MultiCoursesHandler$Companion_getInstance().handlerName)) {
+              if ((tmp$_6 = this.createMultiCoursesEntry_0(data, Kotlin.isType(tmp$_5 = element, MultiCoursesHandler) ? tmp$_5 : Kotlin.throwCCE())) != null) {
+                content.appendChild(tmp$_6);
+              }
+            }
+          }
+        }
+      }
+      tmp$_1 = Unit;
+    }
+     else
+      tmp$_1 = null;
+    if (tmp$_1 == null) {
+      this.removeAllCourses_0(content);
+    }
+  };
+  PageEditProfile.prototype.removeAllCourses_0 = function (content) {
+    var tmp$;
+    while (content.firstChild !== null) {
+      if ((tmp$ = content.firstChild) != null) {
+        content.removeChild(tmp$);
+      }
+    }
+  };
+  PageEditProfile.prototype.createMultiCoursesEntry_0 = function (data, handler) {
+    var tmp$, tmp$_0;
+    var row = (tmp$ = this.templateMultiCourses_0) != null ? tmp$.cloneNode(true) : null;
+    if (Kotlin.isType(row, Element)) {
+      row.removeAttribute('hidden');
+      removeClass(row, ['ly-template-multicourses']);
+      addClass(row, ['ly-' + handler.courseInternalName]);
+      (tmp$_0 = row.getElementsByClassName('ly-displayname')[0]) != null ? (tmp$_0.innerHTML = handler.displayName) : null;
+      var courses = row.getElementsByClassName('ly-courses')[0];
+      if (Kotlin.isType(courses, HTMLInputElement)) {
+        courses.value = data;
+      }
+      return row;
+    }
+    return null;
+  };
+  PageEditProfile.$metadata$ = {
+    kind: Kotlin.Kind.CLASS,
+    simpleName: 'PageEditProfile',
+    interfaces: [Page]
+  };
   function PageLogin() {
     Page.call(this, 'ly-page-login');
     this.usernameField_0 = this.page.getElementsByClassName('ly-username')[0];
     this.passwordField_0 = this.page.getElementsByClassName('ly-password')[0];
-    this.loginButton_0 = this.page.getElementsByClassName('ly-login-button')[0];
-    var tmp$;
-    if ((tmp$ = this.loginButton_0) != null) {
-      tmp$.addEventListener('click', PageLogin_init$lambda$lambda(this));
+    var tmp$, tmp$_0;
+    this.loginButton_0 = Kotlin.isType(tmp$ = this.page.getElementsByClassName('ly-login-button')[0], HTMLElement) ? tmp$ : null;
+    if ((tmp$_0 = this.loginButton_0) != null) {
+      tmp$_0.onclick = PageLogin_init$lambda$lambda(this);
     }
-    Kotlin.isType(this.usernameField_0, HTMLInputElement);
   }
   PageLogin.prototype.load = function () {
     var tmp$, tmp$_0;
@@ -1388,8 +1715,8 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageProfiles() {
     Page.call(this, 'ly-page-profiles');
-    this.templateAddProfile_0 = document.getElementsByClassName('ly-template-addprofile')[0];
-    this.templateProfile_0 = document.getElementsByClassName('ly-template-profile')[0];
+    this.templateAddProfile_0 = this.page.getElementsByClassName('ly-template-addprofile')[0];
+    this.templateProfile_0 = this.page.getElementsByClassName('ly-template-profile')[0];
   }
   PageProfiles.prototype.load = function () {
     var content = this.page.getElementsByClassName('ly-content')[0];
@@ -1417,7 +1744,14 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   PageProfiles.prototype.reload = function () {
   };
   function PageProfiles$createAddProfileRow$lambda(it) {
+    var tmp$;
     println('Creating new profile...');
+    if ((tmp$ = Navigator_getInstance().pages.get_11rb$(Navigator_getInstance().pageEditProfile.name)) != null) {
+      if (Kotlin.isType(tmp$, PageEditProfile)) {
+        tmp$.currentProfileId = 0.0;
+      }
+    }
+    Navigator_getInstance().changeTo_u4w5b9$(Navigator_getInstance().pageEditProfile);
     return Unit;
   }
   PageProfiles.prototype.createAddProfileRow_0 = function () {
@@ -1433,13 +1767,33 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageProfiles$createProfileRow$lambda(closure$profile) {
     return function (it) {
+      var tmp$;
       println('click profile: ' + closure$profile);
+      if ((tmp$ = Navigator_getInstance().pages.get_11rb$(Navigator_getInstance().pageEditProfile.name)) != null) {
+        var closure$profile_0 = closure$profile;
+        if (Kotlin.isType(tmp$, PageEditProfile)) {
+          tmp$.currentProfileId = closure$profile_0.uniqueId;
+        }
+      }
+      Navigator_getInstance().changeTo_u4w5b9$(Navigator_getInstance().pageEditProfile);
       return Unit;
     };
   }
-  function PageProfiles$createProfileRow$lambda_0(closure$profile) {
+  function PageProfiles$createProfileRow$lambda$lambda(closure$profile, this$PageProfiles) {
+    return function () {
+      var tmp$;
+      if ((tmp$ = ProfilesManager_getInstance().findProfileById_14dthe$(closure$profile.uniqueId)) != null) {
+        ProfilesManager_getInstance().profiles.remove_11rb$(tmp$);
+        ProfilesManager_getInstance().commitCurrentState();
+      }
+      this$PageProfiles.load();
+      return Unit;
+    };
+  }
+  function PageProfiles$createProfileRow$lambda_0(closure$profile, this$PageProfiles) {
     return function (it) {
       println('delete profile: ' + closure$profile);
+      window.setTimeout(PageProfiles$createProfileRow$lambda$lambda(closure$profile, this$PageProfiles), 0);
       return Unit;
     };
   }
@@ -1450,7 +1804,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
       row.removeAttribute('hidden');
       removeClass(row, ['ly-template-profile']);
       (tmp$_0 = row.getElementsByClassName('ly-profile-click')[0]) != null ? (tmp$_0.addEventListener('click', PageProfiles$createProfileRow$lambda(profile)), Unit) : null;
-      (tmp$_1 = row.getElementsByClassName('ly-profile-delete')[0]) != null ? (tmp$_1.addEventListener('click', PageProfiles$createProfileRow$lambda_0(profile)), Unit) : null;
+      (tmp$_1 = row.getElementsByClassName('ly-profile-delete')[0]) != null ? (tmp$_1.addEventListener('click', PageProfiles$createProfileRow$lambda_0(profile, this)), Unit) : null;
       (tmp$_2 = row.getElementsByClassName('ly-name')[0]) != null ? (tmp$_2.innerHTML = profile.name) : null;
       (tmp$_3 = row.getElementsByClassName('ly-clazz')[0]) != null ? (tmp$_3.innerHTML = profile.clazz.fullName()) : null;
       return row;
@@ -1464,9 +1818,11 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   function PageVertretungsplan() {
     Page.call(this, 'ly-page-vplan');
-    this.templateVpCard_0 = this.page.getElementsByClassName('ly-template-vcard')[0];
-    this.templateSection_0 = this.page.getElementsByClassName('ly-template-section')[0];
-    this.templateLastUpdated_0 = this.page.getElementsByClassName('ly-template-lastupdated')[0];
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    this.templateVpCard_0 = Kotlin.isType(tmp$ = this.page.getElementsByClassName('ly-template-vcard')[0], HTMLElement) ? tmp$ : null;
+    this.templateSection_0 = Kotlin.isType(tmp$_0 = this.page.getElementsByClassName('ly-template-section')[0], HTMLElement) ? tmp$_0 : null;
+    this.templateLastUpdated_0 = Kotlin.isType(tmp$_1 = this.page.getElementsByClassName('ly-template-lastupdated')[0], HTMLElement) ? tmp$_1 : null;
+    this.templateNoEntries_0 = Kotlin.isType(tmp$_2 = this.page.getElementsByClassName('ly-template-noentries')[0], HTMLElement) ? tmp$_2 : null;
   }
   function PageVertretungsplan$load$lambda$lambda(closure$content, this$PageVertretungsplan) {
     return function (it) {
@@ -1477,7 +1833,7 @@ var VertretungsplanApp3 = function (_, Kotlin) {
         var tmp$_0;
         this$PageVertretungsplan_0.displayBlock_0(it.today, closure$content_0);
         this$PageVertretungsplan_0.displayBlock_0(it.tomorrow, closure$content_0);
-        tmp$ = (tmp$_0 = this$PageVertretungsplan_0.createLastUpdated_0(it.lastUpdated, this$PageVertretungsplan_0.templateLastUpdated_0)) != null ? closure$content_0.appendChild(tmp$_0) : null;
+        tmp$ = (tmp$_0 = this$PageVertretungsplan_0.createLastUpdated_0(it.lastUpdated)) != null ? closure$content_0.appendChild(tmp$_0) : null;
       }
        else
         tmp$ = null;
@@ -1501,20 +1857,27 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   };
   PageVertretungsplan.prototype.displayBlock_0 = function (block, mainContainer) {
     if (block != null) {
-      var tmp$;
-      if ((tmp$ = this.createSection_0(block.day, this.templateSection_0)) != null) {
+      var tmp$, tmp$_0;
+      if ((tmp$ = this.createSection_0(block.day)) != null) {
         mainContainer.appendChild(tmp$);
       }
-      var tmp$_0;
-      tmp$_0 = block.entries.iterator();
-      while (tmp$_0.hasNext()) {
-        var element = tmp$_0.next();
-        var tmp$_1;
+      var entriesAdded = {v: 0};
+      var tmp$_1;
+      tmp$_1 = block.entries.iterator();
+      while (tmp$_1.hasNext()) {
+        var element = tmp$_1.next();
+        var tmp$_2;
         var result = ProfilesManager_getInstance().filterEntry_pnv8wy$(element);
         if (result.filterResult === FilterResult$DISPLAY_getInstance()) {
-          if ((tmp$_1 = this.createVpCard_0(element, this.templateVpCard_0, this.mixColor_0(result))) != null) {
-            mainContainer.appendChild(tmp$_1);
+          if ((tmp$_2 = this.createVpCard_0(element, this.mixColor_0(result))) != null) {
+            entriesAdded.v = entriesAdded.v + 1 | 0;
+            mainContainer.appendChild(tmp$_2);
           }
+        }
+      }
+      if (entriesAdded.v === 0) {
+        if ((tmp$_0 = this.createNoEntries_0()) != null) {
+          mainContainer.appendChild(tmp$_0);
         }
       }
     }
@@ -1529,9 +1892,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     }
     return mix.v.length === 0 || Kotlin.equals(mix.v, 'FFFFFF') ? null : mix.v;
   };
-  PageVertretungsplan.prototype.createVpCard_0 = function (entry, vcardsContent, color) {
-    var tmp$, tmp$_0, tmp$_1;
-    var vpCard = vcardsContent != null ? vcardsContent.cloneNode(true) : null;
+  PageVertretungsplan.prototype.createVpCard_0 = function (entry, color) {
+    var tmp$, tmp$_0, tmp$_1, tmp$_2;
+    var vpCard = (tmp$ = this.templateVpCard_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(vpCard, Element)) {
       vpCard.removeAttribute('hidden');
       removeClass(vpCard, ['ly-template-vcard']);
@@ -1541,9 +1904,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
           card.style.backgroundColor = '#' + Kotlin.toString(color);
         }
       }
-      (tmp$ = vpCard.getElementsByClassName('ly-class')[0]) != null ? (tmp$.innerHTML = entry.classesAsString()) : null;
-      (tmp$_0 = vpCard.getElementsByClassName('ly-subject')[0]) != null ? (tmp$_0.innerHTML = entry.subjectDisplayString()) : null;
-      (tmp$_1 = vpCard.getElementsByClassName('ly-hours')[0]) != null ? (tmp$_1.innerHTML = entry.hours) : null;
+      (tmp$_0 = vpCard.getElementsByClassName('ly-class')[0]) != null ? (tmp$_0.innerHTML = entry.classesAsString()) : null;
+      (tmp$_1 = vpCard.getElementsByClassName('ly-subject')[0]) != null ? (tmp$_1.innerHTML = entry.subjectDisplayString()) : null;
+      (tmp$_2 = vpCard.getElementsByClassName('ly-hours')[0]) != null ? (tmp$_2.innerHTML = entry.hours) : null;
       if (entry.cancelled) {
         var subDiv = vpCard.getElementsByTagName('div')[0];
         if (Kotlin.isType(subDiv, HTMLDivElement)) {
@@ -1554,24 +1917,34 @@ var VertretungsplanApp3 = function (_, Kotlin) {
     }
     return null;
   };
-  PageVertretungsplan.prototype.createSection_0 = function (day, sectionContent) {
-    var tmp$;
-    var section = sectionContent != null ? sectionContent.cloneNode(true) : null;
+  PageVertretungsplan.prototype.createSection_0 = function (day) {
+    var tmp$, tmp$_0;
+    var section = (tmp$ = this.templateSection_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-section']);
-      (tmp$ = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$.innerHTML = day.fullNameAndDate()) : null;
+      (tmp$_0 = section.getElementsByClassName('ly-section-title')[0]) != null ? (tmp$_0.innerHTML = day.fullNameAndDate()) : null;
       return section;
     }
     return null;
   };
-  PageVertretungsplan.prototype.createLastUpdated_0 = function (lastUpdated, content) {
-    var tmp$;
-    var section = content != null ? content.cloneNode(true) : null;
+  PageVertretungsplan.prototype.createLastUpdated_0 = function (lastUpdated) {
+    var tmp$, tmp$_0;
+    var section = (tmp$ = this.templateLastUpdated_0) != null ? tmp$.cloneNode(true) : null;
     if (Kotlin.isType(section, Element)) {
       section.removeAttribute('hidden');
       removeClass(section, ['ly-template-lastupdated']);
-      (tmp$ = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$.innerHTML = lastUpdated) : null;
+      (tmp$_0 = section.getElementsByClassName('ly-lastupdated-date')[0]) != null ? (tmp$_0.innerHTML = lastUpdated) : null;
+      return section;
+    }
+    return null;
+  };
+  PageVertretungsplan.prototype.createNoEntries_0 = function () {
+    var tmp$;
+    var section = (tmp$ = this.templateNoEntries_0) != null ? tmp$.cloneNode(true) : null;
+    if (Kotlin.isType(section, Element)) {
+      section.removeAttribute('hidden');
+      removeClass(section, ['ly-template-noentries']);
       return section;
     }
     return null;
@@ -1646,6 +2019,9 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   });
   var package$handlers = package$profiles.handlers || (package$profiles.handlers = {});
   package$handlers.Handler = Handler;
+  Object.defineProperty(MultiCoursesHandler, 'Companion', {
+    get: MultiCoursesHandler$Companion_getInstance
+  });
   package$handlers.MultiCoursesHandler = MultiCoursesHandler;
   var package$io = package$profiles.io || (package$profiles.io = {});
   Object.defineProperty(package$io, 'ProfilesIO', {
@@ -1664,6 +2040,10 @@ var VertretungsplanApp3 = function (_, Kotlin) {
   var package$pages = package$ui.pages || (package$ui.pages = {});
   package$pages.Page = Page;
   package$pages.PageDaymsgs = PageDaymsgs;
+  Object.defineProperty(PageEditProfile, 'Companion', {
+    get: PageEditProfile$Companion_getInstance
+  });
+  package$pages.PageEditProfile = PageEditProfile;
   package$pages.PageLogin = PageLogin;
   package$pages.PageProfiles = PageProfiles;
   package$pages.PageVertretungsplan = PageVertretungsplan;
